@@ -1,0 +1,551 @@
+@use "@/styles/layout.scss" as *;
+
+.app-layout {
+  --sidebar-width: #{$layout-sidebar-width};
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+
+  &--sidebar-collapse {
+    --sidebar-width: #{$layout-sidebar-collapse-width};
+  }
+
+  .app-layout__container {
+    height: 100%;
+    flex-direction: column;
+  }
+
+  .app-layout__header {
+    flex-shrink: 0;
+    height: $layout-header-height !important;
+    padding: 0;
+    border-bottom: 1px solid $layout-border-color;
+    background: #fff;
+  }
+
+  .app-layout__body {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .app-layout__aside {
+    width: auto !important;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-right: 1px solid $layout-border-color;
+    background: #fff;
+  }
+
+  .app-layout__main {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: $layout-bg-page;
+  }
+
+  .app-layout__tabs-spacer {
+    flex-shrink: 0;
+    height: 5px;
+  }
+
+  .app-layout__tabs {
+    flex: 1;
+    min-height: 0;
+    height: 95%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+     .el-tabs__header {
+      margin: 0;
+      flex-shrink: 0;
+    }
+
+     .el-tabs--card>.el-tabs__header {
+      border-bottom: 0 solid #e4e7ed;
+    }
+
+     .el-tabs--card>.el-tabs__header .el-tabs__nav {
+      border: 0 solid #e4e7ed;
+    }
+
+     .el-tabs--card>.el-tabs__header .el-tabs__item {
+      background: #f2f3f7;
+      border-radius: 2px;
+      border-color: white;
+      border-right-width: 5px;
+      border-right-style: solid;
+      border-left-width: 5px;
+      border-left-style: solid;
+    }
+
+    .el-tabs__item {
+      background: #fff;
+    }
+
+    .el-tabs__content {
+      flex: 1;
+      min-height: 0;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    // 避免 v-show(display:none) 导致 el-table 切换 Tab 时重新计算列宽闪烁
+    .el-tab-pane {
+      display: block !important;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      visibility: hidden;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+     .el-tab-pane.app-layout__tab-pane--active {
+      position: relative;
+      visibility: visible;
+      pointer-events: auto;
+      z-index: 1;
+    }
+  }
+}
+
+.my-custom-style .allbg {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+  align-items: flex-start;
+  background-color: #f2f3f7;
+}
+
+.my-custom-style .tablebg {
+  min-height: auto;
+  width: calc(100% - 40px);
+  margin: 20px;
+  background-color: white;
+}
+
+.my-custom-style .searchBox {
+  display: flex;
+  flex-direction: row;
+  padding: 20px 20px 5px 20px;
+}
+
+.my-custom-style .four-bgdiv {
+  width: 25%;
+  text-align: left;
+  font-size: 14px;
+}
+
+.my-custom-style .two-front-bgdiv {
+  width: 50%;
+  text-align: left;
+  padding: 0px 10px 5px 30px;
+  font-size: 14px;
+}
+
+.my-custom-style .two-back-bgdiv {
+  width: 50%;
+  text-align: left;
+  padding: 0px 30px 5px 10px;
+  font-size: 14px;
+}
+
+.my-custom-style .one-bgdiv {
+  width: 100%;
+  text-align: left;
+  padding: 0px 30px 5px 30px;
+  font-size: 14px;
+}
+
+.my-custom-style .title16-one-padding-bgdiv {
+  font-weight: bold;
+  font-size: 16px;
+
+  width: 100%;
+  text-align: left;
+  padding: 0px 30px 5px 30px;
+}
+
+.my-custom-style .title16-one-bgdiv {
+  font-weight: bold;
+  font-size: 16px;
+
+  width: 100%;
+  text-align: left;
+}
+
+
+.my-custom-style .horizontal-line {
+  border-top: 1px solid #ccc;
+  /* 1px 厚的横线，颜色为浅灰色 */
+  /*margin: 3px 0;  根据需要调整间距 */
+  margin: 5px 0;
+}
+
+.my-custom-style .vertical-line {
+  width: 5px;
+  /* 竖线的宽度 */
+  height: 15px;
+  /* 竖线的高度 */
+  background-color: #037aff;
+  /* 竖线的颜色 */
+}
+
+
+.my-custom-style .no-scrollbar {
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* Internet Explorer 10+ */
+}
+
+.my-custom-style .no-scrollbar::-webkit-scrollbar {
+  overflow: hidden auto;
+  display: none;
+  /* Safari 和 Chrome */
+}
+
+
+.my-custom-style .warntext-bg {
+  background: #e6f1ff;
+  border-radius: 4px 4px 4px 4px;
+  border: 1px solid #80b9ff;
+  align-items: center;
+  display: flex;
+  padding: 5px 10px;
+  font-weight: bold;
+}
+
+
+
+
+.my-custom-style .el-drawer__header {
+  text-align: left;
+  font-weight: bold;
+  font-size: 18px;
+  color: black;
+  margin-bottom: 0;
+  padding: 10px 20px 0;
+}
+
+.my-custom-style .el-dialog__body {
+  padding: 0;
+}
+
+.my-custom-style .el-dialog__header {
+  text-align: left;
+  font-weight: bold;
+  color: black;
+  font-size: 18px;
+  padding: 10px 20px 0px 20px;
+}
+
+.my-custom-style .el-dialog {
+  border-radius: 10px;
+}
+
+
+
+
+.my-custom-style .table-container {
+  width: 100%;
+}
+
+/*.my-custom-style .expand-table .el-table__expanded-cell {
+  padding: 0px;
+}
+
+.my-custom-style .el-table,
+.my-custom-style .el-table__body-wrapper {
+  font-size: 14px;
+}
+
+.my-custom-style .el-table th {
+  background-color: #f1f1f3;
+  color: #4e5969;
+}
+
+.my-custom-style .el-table__fixed td {
+  padding: 0 0;
+}
+
+.my-custom-style .el-table__fixed .cell {
+  line-height: 36px;
+
+}
+
+.my-custom-style .el-table td {
+  padding: 0 0;
+}
+
+.my-custom-style .el-table .cell {
+  line-height: 36px;
+  padding: 0 10px;
+}
+
+.my-custom-style.el-table td.el-table__cell div {
+  align-content: center;
+}
+
+.my-custom-style .el-table thead th {
+  padding: 0 0;
+  height: 36px;
+}
+
+.my-custom-style .el-table thead .cell {
+  line-height: 36px;
+  padding: 0 10px;
+
+  align-content: center;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}*/
+
+
+.my-custom-style .el-select {
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+}
+
+.my-custom-style .el-input__inner {
+  height: 30px;
+  line-height: 30px;
+  padding: 0 25px 0 10px;
+  border-radius: 7px;
+}
+
+.my-custom-style .el-input__suffix {
+  width: 25px;
+  height: 30px;
+  line-height: 30px;
+}
+
+.my-custom-style .el-input__icon {
+  line-height: 30px;
+  height: 30px;
+}
+
+
+.my-custom-style .el-button {
+  line-height: 0 !important;
+  height: 30px;
+}
+
+.my-custom-style .el-button i {
+  line-height: 0 !important;
+}
+
+
+
+
+
+
+.my-custom-style .drag-table .expand-table .el-table__expanded-cell {
+  padding: 0px;
+}
+
+.my-custom-style .drag-table .el-table,
+.my-custom-style .drag-table .el-table__body-wrapper {
+  font-size: 14px;
+}
+
+.my-custom-style .drag-table .el-table th {
+  background-color: #f1f1f3;
+  color: #4e5969;
+}
+
+.my-custom-style .drag-table .el-table--border,
+.el-table--group {
+  border: none;
+}
+
+.my-custom-style .drag-table .el-table::before {
+  height: 0px;
+}
+
+.my-custom-style .drag-table .el-table__header {
+  border-left: 1px solid #ebeef5;
+}
+
+.my-custom-style .drag-table .el-table__body {
+  border-left: 1px solid #ebeef5;
+}
+
+.my-custom-style .drag-table .el-table--border::after,
+.el-table--group::after {
+  width: 0px;
+}
+
+/* 控制每行文字的行高和垂直居中 */
+.my-custom-style .drag-table .el-table td {
+  padding: 0 0;
+  /* 上下内边距 4px，可自行调整 */
+}
+
+/* 如有固定列，需额外处理 */
+.my-custom-style .drag-table .el-table__fixed td {
+  padding: 0 0;
+}
+
+.my-custom-style .drag-table .el-table td.el-table__cell div {
+  align-content: center;
+}
+
+.my-custom-style .drag-table .el-table thead th {
+  padding: 0 0;
+  height: 36px;
+}
+
+/* 控制表头文字的行高和垂直居中 */
+.my-custom-style .drag-table .el-table thead .cell {
+  line-height: 36px;
+  padding: 0 10px;
+  align-content: center;
+
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.my-custom-style .drag-table .el-table td.el-table__cell div {
+  align-content: center;
+}
+
+
+.my-custom-style .drag-table .el-table .el-select {
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+}
+
+.my-custom-style .drag-table .el-table .cell {
+  line-height: 36px;
+  padding: 0 10px;
+  /* 左右内边距保留 */
+}
+
+.my-custom-style .drag-table .el-table__fixed .cell {
+  line-height: 36px;
+}
+
+
+
+
+
+.my-custom-style .normal-table .expand-table .el-table__expanded-cell {
+  padding: 0px;
+}
+
+.my-custom-style .normal-table .el-table,
+.my-custom-style .normal-table .el-table__body-wrapper {
+  font-size: 14px;
+}
+
+.my-custom-style .normal-table .el-table th {
+  background-color: #f1f1f3;
+  color: #4e5969;
+}
+
+.my-custom-style .normal-table .el-table--border,
+.el-table--group {
+  border: none;
+}
+
+.my-custom-style .normal-table .el-table::before {
+  height: 0px;
+}
+
+.my-custom-style .normal-table .el-table__header {
+  border-left: 1px solid #ebeef5;
+
+}
+
+.my-custom-style .normal-table .el-table__body {
+  border-left: 1px solid #ebeef5;
+}
+
+.my-custom-style .normal-table .el-table--border::after,
+.el-table--group::after {
+  width: 0px;
+}
+
+/* 控制每行文字的行高和垂直居中 */
+.my-custom-style .normal-table .el-table td {
+  padding: 0 0;
+  /* 上下内边距 4px，可自行调整 */
+}
+
+/* 如有固定列，需额外处理 */
+.my-custom-style .normal-table .el-table__fixed td {
+  padding: 0 0;
+}
+
+.my-custom-style .normal-table .el-table td.el-table__cell div {
+  align-content: center;
+}
+
+.my-custom-style .normal-table .el-table thead th {
+  padding: 0 0;
+  height: 36px;
+}
+
+/* 控制表头文字的行高和垂直居中 */
+.my-custom-style .normal-table .el-table thead .cell {
+  line-height: 36px;
+  padding: 0 10px;
+  align-content: center;
+
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.my-custom-style .normal-table .el-table td.el-table__cell div {
+  align-content: center;
+}
+
+
+
+.my-custom-style .normal-table .el-table::before {
+  height: 0px;
+}
+
+.my-custom-style .normal-table .el-table .cell {
+  line-height: 36px;
+  padding: 0 10px;
+  /* 左右内边距保留 */
+  height: 36px;
+}
+
+.my-custom-style .normal-table .el-table__fixed .cell {
+  line-height: 36px;
+  height: 36px;
+
+}
+
+
+
+
+.my-custom-style .my-red-input .el-input__inner {
+  color: red !important; /* 加 !important 防止被覆盖 */
+  border-color: red;
+}
+
+
+.my-custom-style .custom-confirm .el-message-box__title {
+  font-weight: bold; /* 调整为所需的字体粗细 */
+  /* 其他样式可以根据需要添加 */
+}

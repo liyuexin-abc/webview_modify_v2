@@ -1,0 +1,39 @@
+@use './variables.scss' as *;
+
+.smart-query {
+  .el-button--primary {
+    background-color: $primary-color;
+    border-color: $primary-color;
+
+    &:hover,
+    &:focus {
+      background-color: #1a41c7;
+      border-color: #1a41c7;
+    }
+
+    &:active {
+      background-color: #1636a8;
+      border-color: #1636a8;
+    }
+
+    &.is-disabled,
+    &.is-disabled:hover,
+    &.is-disabled:focus,
+    &.is-disabled:active {
+      background-color: rgba($primary-color, 0.5);
+      border-color: rgba($primary-color, 0.5);
+    }
+  }
+
+  .el-pagination.is-background .el-pager li:not(.disabled).active {
+    background-color: $primary-color;
+  }
+
+  .el-pagination.is-background .el-pager li:not(.disabled):hover {
+    color: $primary-color;
+  }
+
+  .el-loading-spinner .path {
+    stroke: $primary-color;
+  }
+}
