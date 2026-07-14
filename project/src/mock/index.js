@@ -77,7 +77,7 @@ function chatInfoPayload(chatId, question) {
             filters: [
               {
                 filterField: { fieldClazz: 0, name: '地区', key: 'region' },
-                filterValue: ['华东'],
+                filterValue: ['华东', '华南', '华北', '西南'],
                 operator: 10,
               },
               {

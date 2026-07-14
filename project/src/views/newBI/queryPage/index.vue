@@ -3035,8 +3035,9 @@ export default {
   flex: 0 0 auto;
 }
 
+/* 88 + 240 = 328，与动态条件胶囊总长一致 */
 .filter-cond__date {
-  width: 230px;
+  width: 240px;
   flex: 0 0 auto;
 }
 
@@ -3066,8 +3067,59 @@ export default {
   background: transparent;
 }
 
+/* 多选值：输入框高度锁定 30px，不随标签数量变高 */
+.filter-cond__value--select ::v-deep .el-input__inner {
+  height: 30px !important;
+}
+
+/* 多选值：标签强制单行不换行，避免值多时撑破胶囊 */
 .filter-cond ::v-deep .el-select__tags {
-  max-width: calc(100% - 26px) !important;
+  max-width: calc(100% - 24px) !important;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  height: 28px;
+}
+
+.filter-cond ::v-deep .el-select__tags > span {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.filter-cond__value--select ::v-deep .el-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  line-height: 18px;
+  margin: 0 0 0 4px;
+  padding: 0 4px;
+  flex: 0 0 auto;
+  max-width: 58px;
+  background: #eef3ff;
+  border-color: #dbe4ff;
+  color: #2b5cff;
+}
+
+.filter-cond__value--select ::v-deep .el-tag .el-select__tags-text {
+  display: inline-block;
+  max-width: 36px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.filter-cond__value--select ::v-deep .el-tag .el-tag__close {
+  flex: 0 0 auto;
+  margin-left: 2px;
+  transform: scale(0.8);
+  background: transparent;
+  color: #7c8db5;
+}
+
+.filter-cond__value--select ::v-deep .el-tag .el-tag__close:hover {
+  background: #2b5cff;
+  color: #fff;
 }
 
 /* 日期区间：分隔符"至"垂直水平居中、两侧输入均分宽度 */
