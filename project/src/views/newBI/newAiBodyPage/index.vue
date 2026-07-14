@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%" class="my-custom-style agent-config">
+  <div class="my-custom-style agent-config">
     <el-form label-position="top" size="small" class="agent-config__form">
       <el-row :gutter="16">
         <el-col :span="12">
@@ -759,20 +759,26 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.agent-config {
+  width: 100%;
+  padding: 4px 28px 20px;
+  box-sizing: border-box;
+}
+
 .agent-config__form {
   ::v-deep .el-form-item__label {
-    padding-bottom: 4px;
+    padding-bottom: 6px;
     font-weight: 600;
     color: #334155;
   }
   ::v-deep .el-form-item {
-    margin-bottom: 12px;
+    margin-bottom: 20px;
   }
 }
 
 .agent-config__tabs {
   ::v-deep .el-tabs__header {
-    margin-bottom: 12px;
+    margin-bottom: 18px;
   }
 }
 
@@ -784,23 +790,23 @@ export default {
 
 .agent-config__panes {
   display: flex;
-  gap: 16px;
+  gap: 20px;
 }
 
 .agent-config__pane {
   flex: 1;
   min-width: 0;
   border: 1px solid var(--border-color, #e5eaf1);
-  border-radius: 10px;
-  padding: 12px;
-  background: #fbfcfe;
+  border-radius: 12px;
+  padding: 18px;
+  background: linear-gradient(160deg, #fcfdff, #f9fbfe);
 }
 
 .agent-config__pane-title {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 10px;
+  margin-bottom: 14px;
   font-size: 13px;
   font-weight: 600;
   color: #334155;
@@ -816,8 +822,8 @@ export default {
 
 .agent-config__toolbar {
   display: flex;
-  gap: 8px;
-  margin-bottom: 10px;
+  gap: 10px;
+  margin-bottom: 14px;
 }
 
 .agent-config__table-wrap {
@@ -843,8 +849,8 @@ export default {
 .agent-config__knowledge-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
 .agent-config__knowledge-no {
@@ -864,7 +870,9 @@ export default {
 .agent-config__footer {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 4px 4px;
+  gap: 10px;
+  padding: 18px 0 4px;
+  margin-top: 6px;
+  border-top: 1px solid var(--border-color, #e5eaf1);
 }
 </style>

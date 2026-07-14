@@ -60,7 +60,7 @@
     </div>
 
     <el-dialog
-      width="880px"
+      width="960px"
       top="8vh"
       title="智能体配置"
       :visible.sync="isShowNewAiBodyPage"

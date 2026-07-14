@@ -297,7 +297,7 @@
       title="注册视图"
       :visible.sync="isViewPage"
       :show-close="false"
-      width="60%"
+      width="880px"
       append-to-body
       class="my-custom-style"
     >

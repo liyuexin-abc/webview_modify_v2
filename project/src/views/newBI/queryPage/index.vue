@@ -126,7 +126,7 @@
                         </div>
                       </span>
 
-                      <div style="padding: 10px" class="think">
+                      <div class="think think-content">
                         <markdown-it-vue
                           :content="chatItemInfo.think"
                         ></markdown-it-vue>
@@ -143,7 +143,7 @@
                       <span slot="title" style="width: 100%">
                         <div style="display: flex; align-items: center">
                           <div class="aiTitleNo">
-                            {{ chatItemInfo.itemType }}
+                            {{ chatItemInfo.stepNo || chatItemInfo.itemType }}
                           </div>
                           &nbsp;&nbsp;
                           <div class="aiTitleType" style="min-width: 46px">
@@ -841,7 +841,7 @@
                       <span style="width: 100%" slot="title">
                         <div style="display: flex; align-items: center">
                           <div class="aiTitleNo">
-                            {{ chatItemInfo.itemType }}
+                            {{ chatItemInfo.stepNo || chatItemInfo.itemType }}
                           </div>
                           &nbsp;&nbsp;
                           <div
@@ -893,7 +893,7 @@
                       <span style="width: 100%" slot="title">
                         <div style="display: flex; align-items: center">
                           <div class="aiTitleNo">
-                            {{ chatItemInfo.itemType }}
+                            {{ chatItemInfo.stepNo || chatItemInfo.itemType }}
                           </div>
                           &nbsp;&nbsp;
                           <div
@@ -924,13 +924,7 @@
                               </div>
                             </span>
                             <div style="padding: 10px">
-                              <div
-                                style="
-                                  background: rgb(239 250 252);
-                                  padding: 10px;
-                                  border-radius: 10px;
-                                "
-                              >
+                              <div class="ai-result-card ai-result-card--analyze">
                                 <markdown-it-vue
                                   :content="record.analysisResult"
                                 ></markdown-it-vue>
@@ -973,7 +967,7 @@
                       <span style="width: 100%" slot="title">
                         <div style="display: flex; align-items: center">
                           <div class="aiTitleNo">
-                            {{ chatItemInfo.itemType }}
+                            {{ chatItemInfo.stepNo || chatItemInfo.itemType }}
                           </div>
                           &nbsp;&nbsp;
                           <div
@@ -989,21 +983,7 @@
 
                       <div>
                         <div style="padding: 10px">
-                          <div
-                            style="
-                              padding: 14px 16px;
-                              background: linear-gradient(
-                                135deg,
-                                #eff6ff,
-                                #f0fdfa
-                              );
-                              border: 1px solid #bae6fd;
-                              border-radius: 10px;
-                              font-size: 14px;
-                              line-height: 1.8;
-                              color: rgb(71, 85, 105);
-                            "
-                          >
+                          <div class="ai-result-card ai-result-card--summary">
                             {{ chatItemInfo.answer }}
                           </div>
                         </div>
@@ -1891,6 +1871,7 @@ export default {
 
       let lastType = "";
       let think = null;
+      let stepNo = 0; // 步骤序号(查数/计算/分析/总结依次编号)
 
       for (let j = 0; j < chatInfo.chatItemInfo.length; j++) {
         groupChatItem.chatId = chatInfo.chatId;
@@ -1907,6 +1888,7 @@ export default {
         } else if (type == "ai") {
           think = chatItemInfo.think;
           obj.itemType = chatItemInfo.itemId;
+          obj.stepNo = ++stepNo;
           if (stepType == "query") {
             obj.stepType = stepType;
 
@@ -2685,6 +2667,17 @@ export default {
   overflow: hidden;
 }
 
+.aiInput-textarea ::v-deep .el-textarea__inner,
+.aiInput-textarea.is-disabled ::v-deep .el-textarea__inner,
+.aiInput-textarea ::v-deep .el-textarea__inner:disabled {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--text-primary, #1e293b);
+  -webkit-text-fill-color: var(--text-primary, #1e293b);
+  cursor: text;
+}
+
 .aiInput-textarea ::v-deep .el-textarea__inner {
   border: none;
   //border: 1px solid #DCDFE6;
@@ -2701,6 +2694,47 @@ export default {
   font-size: 16px;
 }
 
+/* 分析/总结结果文字卡片: 多段渐变底 + 内高光, 体现质感 */
+.ai-result-card {
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #3f4a63;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 1px 4px rgba(30, 41, 59, 0.04);
+}
+
+.ai-result-card--analyze {
+  background: linear-gradient(
+    130deg,
+    #f0f7ff 0%,
+    #eef4ff 30%,
+    #f0f0ff 65%,
+    #f6f1ff 100%
+  );
+  border: 1px solid rgba(99, 102, 241, 0.16);
+}
+
+.ai-result-card--summary {
+  background: linear-gradient(
+    130deg,
+    #eff8ff 0%,
+    #ecfbf9 40%,
+    #f0fdf6 75%,
+    #f3fcff 100%
+  );
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.think-content {
+  margin: 8px 10px 10px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: linear-gradient(130deg, #faf9ff 0%, #f6f7ff 55%, #f4fbff 100%);
+  border: 1px solid rgba(139, 92, 246, 0.1);
+}
+
 .userPanel {
   white-space: normal;
   word-break: break-word;
@@ -2711,11 +2745,18 @@ export default {
   font-size: 14px;
   line-height: 1.6;
 
-  background: linear-gradient(135deg, #eaf0ff, #e5f4ff);
-  border: 1px solid rgba(43, 92, 255, 0.14);
-  border-radius: 14px 4px 14px 14px;
+  background: linear-gradient(
+    135deg,
+    #e8efff 0%,
+    #e3f0ff 40%,
+    #ddf3ff 75%,
+    #e6f0ff 100%
+  );
+  border: 1px solid rgba(43, 92, 255, 0.16);
+  border-radius: 16px 4px 16px 16px;
   color: var(--text-primary, #1e293b);
-  box-shadow: 0 1px 3px rgba(43, 92, 255, 0.06);
+  box-shadow: 0 2px 8px rgba(43, 92, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 
 .aiPanel {
@@ -2745,16 +2786,68 @@ export default {
 }
 
 .aiDisableCollapse ::v-deep .el-collapse-item__header {
-  background: #f6f6f6;
-  padding: 10px 30px;
-  height: 42px;
-  //border: 1px solid rgb(210 210 210);
-  color: rgb(95, 102, 116);
-  //border-radius: 10px;
-  border-top-right-radius: 10px;
-  border-top-left-radius: 10px;
-  border-bottom: 1px solid #ebeef5;
-  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+  padding: 10px 24px;
+  height: 44px;
+  color: #5b5e7a;
+  font-weight: 500;
+  border: 1px solid rgba(99, 102, 241, 0.18);
+  border-radius: 12px;
+  /* 水波纹式光晕: 多彩渐变底自左向右流动 */
+  background: linear-gradient(
+    100deg,
+    #eef2ff 0%,
+    #ede9fe 20%,
+    #e0f2fe 40%,
+    #ecfeff 55%,
+    #ede9fe 75%,
+    #eef2ff 100%
+  );
+  background-size: 220% 100%;
+  animation: think-wave 2.6s ease-in-out infinite;
+}
+
+/* 高光扫过(水波光晕) */
+.aiDisableCollapse ::v-deep .el-collapse-item__header::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -70%;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.75) 50%,
+    transparent 100%
+  );
+  animation: think-shine 2.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes think-wave {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes think-shine {
+  0% {
+    left: -70%;
+  }
+  60% {
+    left: 120%;
+  }
+  100% {
+    left: 120%;
+  }
 }
 .aiDisableCollapse ::v-deep .el-collapse-item__content {
   padding-bottom: 0px;
@@ -2770,16 +2863,20 @@ export default {
 }
 
 .aiThinkCollapse ::v-deep .el-collapse-item__header {
-  background: #f6f6f6;
-  padding: 10px 30px;
-  height: 42px;
-  //border: 1px solid rgb(210 210 210);
-  color: rgb(95, 102, 116);
-  //border-radius: 10px;
-  border-top-right-radius: 10px;
-  border-top-left-radius: 10px;
-  border-bottom: 1px solid #ebeef5;
-  border-radius: 10px;
+  background: linear-gradient(120deg, #f5f3ff 0%, #eef2ff 45%, #f0f9ff 100%);
+  padding: 10px 24px;
+  height: 44px;
+  color: #4c4f69;
+  border: 1px solid rgba(139, 92, 246, 0.14);
+  border-radius: 12px;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.aiThinkCollapse ::v-deep .el-collapse-item__header:hover {
+  border-color: rgba(139, 92, 246, 0.32);
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.14);
+  transform: translateY(-1px);
 }
 
 .aiThinkCollapse ::v-deep .el-collapse-item:last-child {
@@ -2796,16 +2893,21 @@ export default {
 }
 
 .aiCollapse ::v-deep .el-collapse-item__header {
-  background: #fafbfe;
-  padding: 10px 30px;
-  height: 42px;
-  //border: 1px solid rgb(232, 234, 237);
-  color: rgb(95, 102, 116);
-  //border-radius: 10px;
-  border-top-right-radius: 10px;
-  border-top-left-radius: 10px;
-  border-bottom: 1px solid #ebeef5;
-  border-radius: 10px;
+  background: linear-gradient(120deg, #f7faff 0%, #f4f8ff 55%, #f2fbfd 100%);
+  padding: 10px 24px;
+  height: 44px;
+  color: #47506b;
+  border: 1px solid rgba(59, 130, 246, 0.13);
+  border-radius: 12px;
+  transition: box-shadow 0.22s ease, border-color 0.22s ease,
+    transform 0.22s ease, background 0.22s ease;
+}
+
+.aiCollapse ::v-deep .el-collapse-item__header:hover {
+  background: linear-gradient(120deg, #f0f6ff 0%, #edf4ff 55%, #e9f9fc 100%);
+  border-color: rgba(59, 130, 246, 0.35);
+  box-shadow: 0 6px 18px rgba(43, 92, 255, 0.13);
+  transform: translateY(-2px);
 }
 
 .aiCollapse ::v-deep .el-collapse-item:last-child {
@@ -2822,16 +2924,20 @@ export default {
 }
 
 .aiAnalysisCollapse ::v-deep .el-collapse-item__header {
-  background: #f1f5ff;
-  padding: 10px 30px;
+  background: linear-gradient(120deg, #f2f6ff 0%, #f1f0fe 60%, #f5f0ff 100%);
+  padding: 10px 24px;
   height: 42px;
-  //border: 1px solid rgb(232, 234, 237);
-  color: rgb(95, 102, 116);
-  //border-radius: 10px;
-  border-top-right-radius: 10px;
-  border-top-left-radius: 10px;
-  border-bottom: 1px solid #ebeef5;
-  border-radius: 10px;
+  color: #4c5470;
+  border: 1px solid rgba(99, 102, 241, 0.13);
+  border-radius: 12px;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.aiAnalysisCollapse ::v-deep .el-collapse-item__header:hover {
+  border-color: rgba(99, 102, 241, 0.32);
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.13);
+  transform: translateY(-1px);
 }
 
 .aiAnalysisCollapse ::v-deep .el-collapse-item:last-child {
@@ -2895,13 +3001,21 @@ export default {
   display: flex;
   align-items: center;
   gap: 5px;
-  background: #e0f2fe;
-  border-color: #7dd3fc;
+  background: linear-gradient(135deg, #e3f1fe, #dbf3fd);
+  border: 1px solid rgba(59, 130, 246, 0.16);
   color: #0369a1;
-  padding: 0 10px;
-  border-radius: 4px;
+  padding: 0 14px;
+  border-radius: 999px;
   height: 30px;
   margin-right: 5px;
+  transition: box-shadow 0.18s ease, transform 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.queryDimPanel:hover {
+  border-color: rgba(59, 130, 246, 0.38);
+  box-shadow: 0 3px 10px rgba(59, 130, 246, 0.16);
+  transform: translateY(-1px);
 }
 
 .queryfilterName {

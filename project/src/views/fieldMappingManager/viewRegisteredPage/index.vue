@@ -1,7 +1,7 @@
 <template>
   <div class="view-reg">
     <div
-      style="max-height: 70vh; overflow-y: auto; overflow-x: hidden; padding: 4px 2px 0"
+      style="max-height: 72vh; overflow-y: auto; overflow-x: hidden; padding: 4px 28px 0"
       class="no-scrollbar"
     >
       <el-form label-position="top" size="small" class="view-reg__form">
@@ -526,12 +526,12 @@ export default {
 <style scoped lang="scss">
 .view-reg__form {
   ::v-deep .el-form-item__label {
-    padding-bottom: 4px;
+    padding-bottom: 6px;
     font-weight: 600;
     color: #334155;
   }
   ::v-deep .el-form-item {
-    margin-bottom: 14px;
+    margin-bottom: 22px;
   }
 }
 
@@ -598,7 +598,9 @@ export default {
 .view-reg__footer {
   display: flex;
   justify-content: flex-end;
-  gap: 4px;
-  padding: 12px 4px 4px;
+  gap: 10px;
+  padding: 16px 28px 18px;
+  border-top: 1px solid var(--border-color, #e5eaf1);
+  margin-top: 8px;
 }
 </style>

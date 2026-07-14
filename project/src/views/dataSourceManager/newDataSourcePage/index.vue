@@ -442,14 +442,14 @@ export default {
 
  <style scoped lang="scss">
 .ds-form-wrap {
-  padding: 2px 4px 0;
+  padding: 4px 28px 6px;
 }
 
 .ds-form__section-title {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 14px;
+  margin-bottom: 20px;
   font-size: 14px;
   font-weight: 600;
   color: #1e293b;
@@ -465,12 +465,12 @@ export default {
 
 .ds-form {
   ::v-deep .el-form-item__label {
-    padding-bottom: 4px;
+    padding-bottom: 6px;
     font-weight: 600;
     color: #334155;
   }
   ::v-deep .el-form-item {
-    margin-bottom: 14px;
+    margin-bottom: 22px;
   }
 }
 
@@ -507,7 +507,9 @@ export default {
 .ds-form__footer {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 4px 4px;
+  gap: 10px;
+  padding: 18px 0 14px;
+  margin-top: 10px;
+  border-top: 1px solid var(--border-color, #e5eaf1);
 }
 </style>

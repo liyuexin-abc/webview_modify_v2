@@ -165,8 +165,8 @@
       :close-on-click-modal="false"
       :visible.sync="isNewDataSource"
       :show-close="false"
-      width="60%"
-      top="10vh"
+      width="820px"
+      top="7vh"
       append-to-body
       class="my-custom-style"
     >
