@@ -10,22 +10,37 @@
     <div class="history-sidebar__list no-scrollbar">
       <template v-for="item in chatHistoryListItem">
         <div v-if="item.records.length > 0" :key="item.key" class="history-sidebar__group">
-          <div class="history-sidebar__group-label">{{ item.name }}</div>
-
           <div
-            v-for="record in item.records"
-            :key="record.chatSessionId"
-            class="history-sidebar__item"
-            :title="record.chatName"
-            @click="getChatHistoryListDetail(record)"
+            class="history-sidebar__group-label"
+            :class="{ 'is-expanded': isExpanded(item.key) }"
+            @click="toggleGroup(item.key)"
           >
             <base-icon
-              name="message-plus"
-              :size="13"
-              :stroke-width="1.8"
-              class="history-sidebar__item-icon"
+              name="chevron-right"
+              :size="12"
+              :stroke-width="2"
+              class="history-sidebar__group-arrow"
             />
-            <span class="history-sidebar__item-name">{{ record.chatName }}</span>
+            <span>{{ item.name }}</span>
+            <span class="history-sidebar__group-count">{{ item.records.length }}</span>
+          </div>
+
+          <div v-show="isExpanded(item.key)" class="history-sidebar__group-body">
+            <div
+              v-for="record in item.records"
+              :key="record.chatSessionId"
+              class="history-sidebar__item"
+              :title="record.chatName"
+              @click="getChatHistoryListDetail(record)"
+            >
+              <base-icon
+                name="message-plus"
+                :size="13"
+                :stroke-width="1.8"
+                class="history-sidebar__item-icon"
+              />
+              <span class="history-sidebar__item-name">{{ record.chatName }}</span>
+            </div>
           </div>
         </div>
       </template>
@@ -49,6 +64,7 @@ export default {
   data() {
     return {
       chatHistoryListItem: [],
+      expandedGroups: {}, // 默认全部折叠
     };
   },
 
@@ -66,6 +82,14 @@ export default {
   },
 
   methods: {
+    isExpanded(key) {
+      return !!this.expandedGroups[key];
+    },
+
+    toggleGroup(key) {
+      this.$set(this.expandedGroups, key, !this.expandedGroups[key]);
+    },
+
     /*loadingScreen() {
       const loading = this.$loading({
         lock: true,
@@ -133,6 +157,8 @@ export default {
               ),
             };
             this.chatHistoryListItem.push(moreThanSixMonth);
+            // 刷新列表后默认全部折叠
+            this.expandedGroups = {};
           } else {
             this.$message({
               message: response.message,
@@ -215,12 +241,55 @@ export default {
 }
 
 .history-sidebar__group-label {
-  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 8px;
+  border-radius: 7px;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.04em;
   color: var(--text-muted, #94a3b8);
   text-align: left;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s, color 0.15s;
+
+  &:hover {
+    background: rgba(43, 92, 255, 0.05);
+    color: var(--brand, #2b5cff);
+  }
+
+  &.is-expanded {
+    color: var(--text-secondary, #475569);
+
+    .history-sidebar__group-arrow {
+      transform: rotate(90deg);
+    }
+  }
+}
+
+.history-sidebar__group-arrow {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.history-sidebar__group-count {
+  margin-left: auto;
+  min-width: 18px;
+  height: 16px;
+  line-height: 16px;
+  padding: 0 5px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  text-align: center;
+  color: #7286a3;
+  background: rgba(43, 92, 255, 0.07);
+}
+
+.history-sidebar__group-body {
+  padding-left: 4px;
 }
 
 .history-sidebar__item {
