@@ -252,15 +252,10 @@
                                 >
                                 </el-checkbox>-->
                               </div>
-                              <el-tooltip
-                                :content="dim.name"
-                                placement="top"
-                                :open-delay="150"
-                              >
-                                <div class="queryDimPanel__text">
-                                  {{ dim.name }}
-                                </div>
-                              </el-tooltip>
+                              <truncate-tip
+                                class="queryDimPanel__text"
+                                :text="dim.name"
+                              />
 
                               <div
                                 @click="
@@ -344,15 +339,10 @@
                                 >
                                 </el-checkbox>-->
                               </div>
-                              <el-tooltip
-                                :content="mertic.name"
-                                placement="top"
-                                :open-delay="150"
-                              >
-                                <div class="queryDimPanel__text">
-                                  {{ mertic.name }}
-                                </div>
-                              </el-tooltip>
+                              <truncate-tip
+                                class="queryDimPanel__text"
+                                :text="mertic.name"
+                              />
                               <div
                                 @click="
                                   (val) =>
@@ -430,6 +420,7 @@
                                   <el-date-picker
                                     v-model="chatItemInfo.dataRange"
                                     type="daterange"
+                                    range-separator="至"
                                     start-placeholder="开始日期"
                                     end-placeholder="结束日期"
                                     :value-format="'yyyy-MM-dd'"
@@ -451,15 +442,10 @@
                                   :key="index3"
                                   class="filter-cond"
                                 >
-                                  <el-tooltip
-                                    :content="filter.name"
-                                    placement="top"
-                                    :open-delay="150"
-                                  >
-                                    <div class="filter-cond__name">
-                                      {{ filter.name }}
-                                    </div>
-                                  </el-tooltip>
+                                  <truncate-tip
+                                    class="filter-cond__name"
+                                    :text="filter.name"
+                                  />
 
                                   <el-select
                                     placeholder="操作"
@@ -1085,6 +1071,7 @@ import {
 
 import { getUserInfo } from "@/utils/auth";
 import SqlPanel from "@/components/SqlPanel";
+import TruncateTip from "@/components/TruncateTip";
 
 import { sendChat, getChatInfo } from "@/api/smartQuery/smartQueryAPI.js";
 import { connectChatWebSocket } from "@/views/smartQuery/utils/chatWebSocket.js";
@@ -1092,7 +1079,7 @@ import { connectChatWebSocket } from "@/views/smartQuery/utils/chatWebSocket.js"
 export default {
   name: "queryPage",
   props: [],
-  components: { SqlPanel },
+  components: { SqlPanel, TruncateTip },
   data() {
     return {
       dimFilter: [],
@@ -2945,12 +2932,9 @@ export default {
   transform: translateY(-1px);
 }
 
-/* 标签文本：超长单行省略，悬停 Tooltip 展示全文 */
+/* 标签文本：超长单行省略；仅当确实被截断时才显示 Tooltip（TruncateTip 组件控制） */
 .queryDimPanel__text {
-  max-width: 168px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  max-width: 7em; /* 约 7 个汉字，超出即省略 */
   cursor: default;
 }
 
@@ -3026,43 +3010,40 @@ export default {
   box-shadow: 0 0 0 2px rgba(43, 92, 255, 0.12);
 }
 
-/* 条件名（字段名）：自适应宽度 + 超长省略 */
+/* 条件名（字段名）：固定宽度，超长省略，保证每个筛选器长度一致 */
 .filter-cond__name {
-  display: flex;
-  align-items: center;
-  padding: 0 12px;
+  display: block;
+  box-sizing: border-box;
+  width: 108px;
+  padding: 0 10px;
   height: 30px;
-  max-width: 140px;
+  line-height: 30px;
   background: #f2f5fb;
   color: #303a4e;
   font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   border-right: 1px solid #e6eaf3;
   flex: 0 0 auto;
 }
 
 .filter-cond__field {
-  width: 96px;
+  width: 88px;
   flex: 0 0 auto;
 }
 
 .filter-cond__op {
-  width: 92px;
+  width: 84px;
   flex: 0 0 auto;
 }
 
 .filter-cond__date {
-  width: 236px;
-  max-width: 48vw;
-  flex: 0 1 auto;
+  width: 230px;
+  flex: 0 0 auto;
 }
 
+/* 值区域：固定宽度，所有条件胶囊总长一致（108+84+110+26） */
 .filter-cond__value {
-  width: 150px;
-  max-width: 40vw;
-  flex: 0 1 auto;
+  width: 110px;
+  flex: 0 0 auto;
 }
 
 /* 胶囊内部控件去边框，由外层胶囊统一描边 */
@@ -3087,6 +3068,34 @@ export default {
 
 .filter-cond ::v-deep .el-select__tags {
   max-width: calc(100% - 26px) !important;
+}
+
+/* 日期区间：分隔符"至"垂直水平居中、两侧输入均分宽度 */
+.filter-cond__date ::v-deep .el-range-separator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 30px;
+  height: 30px;
+  padding: 0;
+  width: 10%;
+  font-size: 12px;
+  color: #98a2b8;
+}
+
+.filter-cond__date ::v-deep .el-range-input {
+  width: 42%;
+  font-size: 13px;
+}
+
+.filter-cond__date ::v-deep .el-range__icon {
+  line-height: 30px;
+  margin-left: 2px;
+}
+
+.filter-cond__date ::v-deep .el-range__close-icon {
+  line-height: 30px;
+  width: 16px;
 }
 
 /* 删除按钮：悬停变红，替代原三角形 × hack */
@@ -3118,14 +3127,10 @@ export default {
   padding: 0 20px;
 }
 
-/* 窄屏：日期区间、值输入自动压缩 */
+/* 窄屏：条件胶囊内部允许换行 */
 @media (max-width: 768px) {
   .filter-cond {
     flex-wrap: wrap;
-  }
-  .filter-cond__date,
-  .filter-cond__value {
-    max-width: 100%;
   }
 }
 
