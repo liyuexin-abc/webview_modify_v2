@@ -21,6 +21,8 @@ const QUERY_COLUMNS = [
   { key: 'region', name: '地区', unit: '' },
   { key: 'sales_amount', name: '销售额', unit: '万元' },
   { key: 'order_cnt', name: '订单数', unit: '笔' },
+  { key: 'sag_alarm_cnt', name: '近七日暂降告警数量', unit: '次' },
+  { key: 'interrupt_alarm_cnt', name: '近七日短时中断告警数量', unit: '次' },
 ]
 
 const REGIONS = ['华东', '华南', '华北', '西南', '华中', '东北', '西北']
@@ -28,6 +30,8 @@ const QUERY_RECORDS = REGIONS.map((r, i) => ({
   region: r,
   sales_amount: (9800 - i * 1130 + (i % 3) * 210).toFixed(2),
   order_cnt: 12400 - i * 1500,
+  sag_alarm_cnt: 18 - i * 2,
+  interrupt_alarm_cnt: 9 + (i % 4) * 3,
 }))
 
 function chatInfoPayload(chatId, question) {
@@ -62,9 +66,39 @@ function chatInfoPayload(chatId, question) {
             indexList: [
               { indKey: 'sales_amount', indName: '销售额', id: 101 },
               { indKey: 'order_cnt', indName: '订单数', id: 102 },
+              { indKey: 'sag_alarm_cnt', indName: '近七日暂降告警数量', id: 103 },
+              {
+                indKey: 'interrupt_alarm_cnt',
+                indName: '近七日短时中断告警数量',
+                id: 104,
+              },
             ],
             dimList: [{ dimKey: 'region', dimName: '地区', id: 201 }],
-            filters: [],
+            filters: [
+              {
+                filterField: { fieldClazz: 0, name: '地区', key: 'region' },
+                filterValue: ['华东'],
+                operator: 10,
+              },
+              {
+                filterField: {
+                  fieldClazz: 1,
+                  name: '销售额',
+                  key: 'sales_amount',
+                },
+                filterValue: '5000',
+                operator: 3,
+              },
+              {
+                filterField: {
+                  fieldClazz: 1,
+                  name: '近七日暂降告警数量',
+                  key: 'sag_alarm_cnt',
+                },
+                filterValue: '10',
+                operator: 0,
+              },
+            ],
           },
         },
       },
@@ -171,6 +205,20 @@ const METRICS = [
   { id: 101, chineseName: '销售额', englishName: 'sales_amount', unit: '万元', type: '原子指标', status: 1, caliber: '订单实付金额汇总', principalName: '张敏', updatedAt: now },
   { id: 102, chineseName: '订单数', englishName: 'order_cnt', unit: '笔', type: '原子指标', status: 1, caliber: '去重订单号计数', principalName: '李航', updatedAt: now },
 ]
+// 扩充到 99 条，便于验证分页组件在多页码（含省略号）场景下的布局
+for (let i = 3; i <= 99; i++) {
+  METRICS.push({
+    id: 100 + i,
+    chineseName: `演示指标${i}`,
+    englishName: `demo_metric_${i}`,
+    unit: '个',
+    type: i % 3 === 0 ? '派生指标' : '原子指标',
+    status: 1,
+    caliber: `演示口径说明 ${i}`,
+    principalName: i % 2 === 0 ? '张敏' : '李航',
+    updatedAt: now,
+  })
+}
 const GROUPS = [
   { id: 1, groupCode: 'G_SALES', groupName: '销售核心指标组', subjectDomain: '销售域', fieldCount: 6, statusName: '已上线' },
 ]
@@ -292,7 +340,7 @@ const routes = [
     match: (u) => u.includes('/api/v1/dimensions/page'),
     handle: (u, m, p) => ok({ ...pageList(DIMENSIONS, p), records: DIMENSIONS }),
   },
-  { match: (u, m) => m === 'get' && /\/api\/v1\/metrics(\?|$)/.test(u), handle: (u, m, p) => ok({ ...pageList(METRICS, p), records: METRICS }) },
+  { match: (u, m) => m === 'get' && /\/api\/v1\/metrics(\?|$)/.test(u), handle: (u, m, p) => { const paged = pageList(METRICS, p); return ok({ ...paged, records: paged.list }) } },
   { match: (u) => u.includes('/api/v1/indicator-groups/list'), handle: (u, m, p) => ok(pageList(GROUPS, p)) },
   { match: (u, m) => m === 'get' && /\/api\/v1\/field-mappings\/tables(\?|$)/.test(u), handle: (u, m, p) => ok(pageList(MAPPING_TABLES, p)) },
   { match: (u) => u.includes('/api/v1/meta/collect-log/page'), handle: (u, m, p) => ok(pageList([], p)) },
@@ -322,7 +370,9 @@ service.interceptors.request.use((config) => {
       if (typeof body === 'string') {
         try { body = JSON.parse(body) } catch (e) { /* ignore */ }
       }
-      const data = route.handle(url, method, parseQuery(url), body)
+      // axios 的 params 不会拼进 config.url，需要与 url query 合并后传给 handler
+      const query = { ...parseQuery(url), ...(config.params || {}) }
+      const data = route.handle(url, method, query, body)
       return new Promise((resolve) => {
         setTimeout(() => resolve({
           data,

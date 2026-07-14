@@ -234,10 +234,10 @@
                             align-items: center;
                           "
                         >
-                          <div style="display: flex; align-items: center">
-                            <div style="width: 60px">维度</div>
-                            
-                            <div style="display: flex;align-items: center;flex-wrap: wrap;gap: 5px; width:90%;">
+                          <div class="query-row__main">
+                            <div class="query-row__label">维度</div>
+
+                            <div class="query-row__tags">
                             <div
                               v-for="dim in chatItemInfo.other.dimList"
                               :key="dim.name"
@@ -252,10 +252,14 @@
                                 >
                                 </el-checkbox>-->
                               </div>
-                              <el-tooltip :content="dim.name" placement="top">
-                              <div style="max-width:80px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
-                                
-                                {{dim.name}} </div>
+                              <el-tooltip
+                                :content="dim.name"
+                                placement="top"
+                                :open-delay="150"
+                              >
+                                <div class="queryDimPanel__text">
+                                  {{ dim.name }}
+                                </div>
                               </el-tooltip>
 
                               <div
@@ -321,11 +325,10 @@
                             align-items: center;
                           "
                         >
-                          <div style="display: flex; align-items: center">
-                            <div style="width: 60px">指标</div>
-                            
-                            
-                            <div style="display: flex;align-items: center;flex-wrap: wrap;gap: 5px;width:90%;">
+                          <div class="query-row__main">
+                            <div class="query-row__label">指标</div>
+
+                            <div class="query-row__tags">
                             <div
                               v-for="mertic in chatItemInfo.other.merticList"
                               :key="mertic.name"
@@ -341,8 +344,14 @@
                                 >
                                 </el-checkbox>-->
                               </div>
-                              <el-tooltip :content="mertic.name" placement="top">
-                              <div style="max-width:80px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ mertic.name }}</div>
+                              <el-tooltip
+                                :content="mertic.name"
+                                placement="top"
+                                :open-delay="150"
+                              >
+                                <div class="queryDimPanel__text">
+                                  {{ mertic.name }}
+                                </div>
                               </el-tooltip>
                               <div
                                 @click="
@@ -396,43 +405,27 @@
                           </div>
                         </div>
 
-                        <div
-                          style="
-                            padding: 5px 20px;
-                            background: #fafbfe;
-                            display: flex;
-                            justify-content: space-between;
-                            border-bottom: 1px solid rgb(234 234 234);
-                          "
-                        >
-                          <div style="display: flex; width: 100%">
-                            <div style="width: 60px">筛选器</div>
+                        <div class="query-row query-row--filter">
+                          <div class="query-row__main">
+                            <div class="query-row__label">筛选器</div>
 
-                            <div style="width: 90%">
-                              <div
-                                style="
-                                  display: flex;
-                                  flex-wrap: wrap;
-                                  gap: 10px;
-                                "
-                              >
-                                <div style="display: flex">
-                                  <div>
-                                    <el-select
-                                      placeholder="日期"
-                                      v-model="chatItemInfo.dateGranularity"
-                                      style="width: 100px; border-radius: 0px"
-                                      class="selectStyle"
+                            <div class="filter-area">
+                              <div class="filter-conds">
+                                <!-- 日期条件（固定第一个） -->
+                                <div class="filter-cond">
+                                  <el-select
+                                    placeholder="日期"
+                                    v-model="chatItemInfo.dateGranularity"
+                                    class="filter-cond__field selectStyle"
+                                  >
+                                    <el-option
+                                      v-for="item in granularityEnum"
+                                      :key="item.value"
+                                      :label="item.name"
+                                      :value="item.value"
                                     >
-                                      <el-option
-                                        v-for="item in granularityEnum"
-                                        :key="item.value"
-                                        :label="item.name"
-                                        :value="item.value"
-                                      >
-                                      </el-option>
-                                    </el-select>
-                                  </div>
+                                    </el-option>
+                                  </el-select>
 
                                   <el-date-picker
                                     v-model="chatItemInfo.dataRange"
@@ -440,146 +433,92 @@
                                     start-placeholder="开始日期"
                                     end-placeholder="结束日期"
                                     :value-format="'yyyy-MM-dd'"
-                                    style="width: 250px; border-radius: 0px"
-                                    class="myDate"
+                                    class="filter-cond__date myDate"
                                   >
                                     <template slot="suffix">
                                       <i
                                         class="el-input__icon el-icon-date"
                                       ></i>
-                                      <!-- 自定义图标位置 -->
                                     </template>
                                   </el-date-picker>
-
-                                  <!--<div
-                                    style="
-                                      width: 30px;
-                                      height: 30px;
-                                      margin-left: 10px;
-                                    "
-                                  ></div>-->
                                 </div>
 
+                                <!-- 动态筛选条件 -->
                                 <div
                                   v-for="(
                                     filter, index3
                                   ) in chatItemInfo.filter"
                                   :key="index3"
-                                  style="display: flex"
+                                  class="filter-cond"
                                 >
-                                  <div class="queryfilterName">
-                                    {{ filter.name }}
-                                  </div>
-                                  <div>
-                                    <el-select
-                                      placeholder="操作"
-                                      v-model="filter.operator"
-                                      style="width: 100px; border-radius: 0px"
-                                      class="selectStyle"
-                                      @change="operatorChange(filter)"
+                                  <el-tooltip
+                                    :content="filter.name"
+                                    placement="top"
+                                    :open-delay="150"
+                                  >
+                                    <div class="filter-cond__name">
+                                      {{ filter.name }}
+                                    </div>
+                                  </el-tooltip>
+
+                                  <el-select
+                                    placeholder="操作"
+                                    v-model="filter.operator"
+                                    class="filter-cond__op selectStyle"
+                                    @change="operatorChange(filter)"
+                                  >
+                                    <el-option
+                                      v-for="item in operatorEnum"
+                                      :key="item.value"
+                                      :label="item.name"
+                                      :value="item.value"
                                     >
-                                      <el-option
-                                        v-for="item in operatorEnum"
-                                        :key="item.value"
-                                        :label="item.name"
-                                        :value="item.value"
-                                      >
-                                      </el-option>
-                                    </el-select>
-                                  </div>
+                                    </el-option>
+                                  </el-select>
 
                                   <!--按照操作符变化输入框和下拉框-->
-                                  <div
+                                  <el-input
                                     v-if="filter.operator <= 9"
-                                    style="position: static"
+                                    v-model="filter.value"
+                                    class="filter-cond__value myinput"
+                                    placeholder="请输入值"
                                   >
-                                    <el-input
-                                      v-model="filter.value"
-                                      style="width: 150px; border-radius: 0px"
-                                      class="myinput"
-                                      placeholder="请输入值"
+                                  </el-input>
+                                  <el-select
+                                    v-else
+                                    placeholder="请选择值"
+                                    v-model="filter.value"
+                                    class="filter-cond__value filter-cond__value--select"
+                                    multiple
+                                    collapse-tags
+                                  >
+                                    <el-option
+                                      v-for="item in filter.diaplayValue"
+                                      :key="item"
+                                      :label="item"
+                                      :value="item"
                                     >
-                                      <template slot="suffix">
-                                        <span
-                                          class="clear-btn"
-                                          @click="
-                                            deleteFilter(index3, chatItemInfo)
-                                          "
-                                        >
-                                          <span class="triangle">
-                                            <span class="x-mark">×</span>
-                                          </span>
-                                        </span>
-                                      </template>
-                                    </el-input>
-                                  </div>
-                                  <!--<div
-                                    v-if="
-                                      filter.type == filterTypeEnum['dim'].value
+                                    </el-option>
+                                  </el-select>
+
+                                  <button
+                                    type="button"
+                                    class="filter-cond__remove"
+                                    title="删除此条件"
+                                    @click.stop="
+                                      deleteFilter(index3, chatItemInfo)
                                     "
-                                  >-->
-                                  <div v-else style="position: static">
-                                    <div>
-                                      <el-select
-                                        placeholder="请选择值"
-                                        v-model="filter.value"
-                                        style="width: 150px; border-radius: 0px"
-                                        class="select-clear-Style"
-                                        multiple
-                                        collapse-tags
-                                      >
-                                        <template slot="prefix">
-                                          <span
-                                            class="clear-btn"
-                                            style="background: transparent"
-                                          >
-                                            <span
-                                              class="triangle"
-                                              @click.stop="
-                                                deleteFilter(
-                                                  index3,
-                                                  chatItemInfo
-                                                )
-                                              "
-                                            >
-                                              <span class="x-mark">×</span>
-                                            </span>
-                                          </span>
-                                        </template>
-
-                                        <el-option
-                                          v-for="item in filter.diaplayValue"
-                                          :key="item"
-                                          :label="item"
-                                          :value="item"
-                                        >
-                                        </el-option>
-                                      </el-select>
-                                    </div>
-                                  </div>
-
-                                  <!--<div style="margin-left: 10px">
-                                    <el-button
-                                      type="text"
-                                      style="
-                                        color: red;
-                                        width: 30px;
-                                        height: 30px;
-                                        line-height: 0px;
-                                      "
-                                      @click="deleteFilter(index3, chatItemInfo)"
-                                      >删除</el-button
-                                    >
-                                  </div>-->
+                                  >
+                                    <i class="el-icon-close"></i>
+                                  </button>
                                 </div>
                               </div>
 
-                              <div style="padding: 5px 0px 0px 0px">
+                              <div class="filter-area__actions">
                                 <el-button
                                   type="primary"
-                                  width="100px"
                                   icon="el-icon-search"
-                                  style="height: 30px; padding: 0px 20px"
+                                  class="filter-area__search"
                                   @click="getMetricsPreview(chatItemInfo)"
                                   >搜索</el-button
                                 >
@@ -3006,16 +2945,188 @@ export default {
   transform: translateY(-1px);
 }
 
-.queryfilterName {
-  width: 100px;
-  border: 1px solid #e0e0e6;
+/* 标签文本：超长单行省略，悬停 Tooltip 展示全文 */
+.queryDimPanel__text {
+  max-width: 168px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: default;
+}
 
-  line-height: 24px;
-  border-radius: 3px;
-  background: #fafafc;
-  text-align: center;
-  padding: 2px 0px 2px 0px;
+/* ---------- 行级布局（维度/指标/筛选器公用，尺寸自适应） ---------- */
+.query-row--filter {
+  padding: 10px 20px;
+  background: #fafbfe;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.query-row__main {
+  display: flex;
+  align-items: flex-start;
+  flex: 1 1 auto;
+  min-width: 0; /* 允许内部收缩，防止撑破 */
+}
+
+.query-row__label {
+  flex: 0 0 60px;
+  width: 60px;
+  line-height: 30px;
+  color: #303a4e;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.query-row__tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 2px 0;
+}
+
+/* ---------- 筛选条件区：响应式胶囊卡片 ---------- */
+.filter-area {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.filter-conds {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+}
+
+/* 单个条件：圆角胶囊，内部元素无缝拼接 */
+.filter-cond {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid #dde3ee;
+  border-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.filter-cond:hover {
+  border-color: rgba(43, 92, 255, 0.4);
+  box-shadow: 0 2px 8px rgba(43, 92, 255, 0.08);
+}
+
+.filter-cond:focus-within {
+  border-color: #2b5cff;
+  box-shadow: 0 0 0 2px rgba(43, 92, 255, 0.12);
+}
+
+/* 条件名（字段名）：自适应宽度 + 超长省略 */
+.filter-cond__name {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
   height: 30px;
+  max-width: 140px;
+  background: #f2f5fb;
+  color: #303a4e;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-right: 1px solid #e6eaf3;
+  flex: 0 0 auto;
+}
+
+.filter-cond__field {
+  width: 96px;
+  flex: 0 0 auto;
+}
+
+.filter-cond__op {
+  width: 92px;
+  flex: 0 0 auto;
+}
+
+.filter-cond__date {
+  width: 236px;
+  max-width: 48vw;
+  flex: 0 1 auto;
+}
+
+.filter-cond__value {
+  width: 150px;
+  max-width: 40vw;
+  flex: 0 1 auto;
+}
+
+/* 胶囊内部控件去边框，由外层胶囊统一描边 */
+.filter-cond ::v-deep .el-input__inner,
+.filter-cond ::v-deep .el-range-editor.el-input__inner {
+  border: none !important;
+  border-radius: 0 !important;
+  height: 30px;
+  line-height: 30px;
+  background: #fff !important;
+}
+
+.filter-cond ::v-deep .selectStyle .el-input__inner {
+  background: #f7f9fd !important;
+  border-right: 1px solid #e6eaf3 !important;
+  text-align: center;
+}
+
+.filter-cond ::v-deep .el-date-editor .el-range-input {
+  background: transparent;
+}
+
+.filter-cond ::v-deep .el-select__tags {
+  max-width: calc(100% - 26px) !important;
+}
+
+/* 删除按钮：悬停变红，替代原三角形 × hack */
+.filter-cond__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  border: none;
+  border-left: 1px solid #e6eaf3;
+  background: #f7f9fd;
+  color: #98a2b8;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.filter-cond__remove:hover {
+  background: #fef0f0;
+  color: #f56c6c;
+}
+
+.filter-area__actions {
+  display: flex;
+}
+
+.filter-area__search {
+  height: 30px;
+  padding: 0 20px;
+}
+
+/* 窄屏：日期区间、值输入自动压缩 */
+@media (max-width: 768px) {
+  .filter-cond {
+    flex-wrap: wrap;
+  }
+  .filter-cond__date,
+  .filter-cond__value {
+    max-width: 100%;
+  }
 }
 
 .query-tableBox {
