@@ -3,7 +3,7 @@
     <div class="left-menu__content">
       <el-menu
         default-active="1-1"
-        active-text-color="#0073FF"
+        active-text-color="#2b5cff"
         :collapse="isCollapse"
         :default-openeds="['1', '2', '3', '4']"
         :collapse-transition="false"
@@ -103,7 +103,8 @@ export default {
   justify-content: space-between;
   width: $layout-sidebar-width;
   height: 100%;
-  background: #fff;
+  background: linear-gradient(180deg, #fdfeff 0%, #f8fafd 100%);
+  border-right: 1px solid rgba(43, 92, 255, 0.07);
   transition: width 0.2s;
 
   &.is-collapse {
@@ -115,34 +116,111 @@ export default {
     min-height: 0;
     overflow-x: hidden;
     overflow-y: auto;
+    padding: 10px 10px 0;
   }
 
   .left-menu__footer {
     flex-shrink: 0;
     display: flex;
     justify-content: flex-end;
-    padding: 10px;
+    padding: 10px 12px;
+    border-top: 1px solid rgba(43, 92, 255, 0.06);
 
     .el-button {
-      font-size: 16px;
+      font-size: 15px;
+      color: #66758a;
+      border-color: rgba(43, 92, 255, 0.14);
+      border-radius: 9px;
+
+      &:hover {
+        color: var(--brand, #2b5cff);
+      }
     }
   }
 
   ::v-deep .el-menu {
     border-right: none;
+    background: transparent;
   }
 
   ::v-deep .el-menu-item-group__title {
     padding: 0;
   }
 
+  /* 分组标题:更醒目的层级感 */
+  ::v-deep .el-submenu__title {
+    height: 42px;
+    line-height: 42px;
+    padding-left: 12px !important;
+    margin: 2px 0;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #3c465e;
+    letter-spacing: 0.3px;
+    transition: background 0.18s ease, color 0.18s ease;
+
+    &:hover {
+      background: rgba(43, 92, 255, 0.05);
+      color: var(--brand, #2b5cff);
+    }
+
+    .el-submenu__icon-arrow {
+      font-size: 11px;
+      color: #9aa7bd;
+      right: 12px;
+    }
+  }
+
+  /* 子项:胶囊态 + 左侧指示条 */
+  ::v-deep .el-menu-item {
+    position: relative;
+    height: 38px;
+    line-height: 38px;
+    min-width: 0;
+    margin: 2px 0 2px 8px;
+    padding-left: 32px !important;
+    border-radius: 9px;
+    font-size: 13px;
+    color: #5a6880;
+    transition: background 0.18s ease, color 0.18s ease;
+
+    &:hover {
+      background: rgba(43, 92, 255, 0.06);
+      color: var(--brand, #2b5cff);
+    }
+
+    &.is-active {
+      background: linear-gradient(
+        100deg,
+        rgba(59, 130, 246, 0.1),
+        rgba(43, 92, 255, 0.07)
+      );
+      color: var(--brand, #2b5cff);
+      font-weight: 600;
+
+      &::before {
+        content: "";
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 14px;
+        border-radius: 3px;
+        background: linear-gradient(180deg, #3b82f6, #2b5cff);
+      }
+    }
+  }
+
   .left-menu__icon {
     display: inline-block;
-    width: 18px;
-    height: 18px;
-    margin-right: 5px;
+    width: 17px;
+    height: 17px;
+    margin-right: 8px;
     vertical-align: middle;
-    color: #909399;
+    color: #8a97ad;
+    transition: color 0.18s ease;
 
     svg {
       width: 100%;
@@ -157,7 +235,7 @@ export default {
 
   ::v-deep .el-submenu.is-active > .el-submenu__title .left-menu__icon,
   ::v-deep .el-submenu__title:hover .left-menu__icon {
-    color: #0073ff;
+    color: var(--brand, #2b5cff);
   }
 }
 </style>

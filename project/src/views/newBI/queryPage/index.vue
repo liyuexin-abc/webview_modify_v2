@@ -611,15 +611,23 @@
                                 ></el-button>
                               </span>
 
-                              <el-dropdown-menu slot="dropdown">
-                                <div style="width: 250px; padding: 8px">
-                                  <div
-                                    style="padding: 0 0 0 10px; font-size: 12px"
-                                  >
+                              <el-dropdown-menu
+                                slot="dropdown"
+                                class="filter-pop-menu"
+                              >
+                                <div class="filter-pop">
+                                  <div class="filter-pop__header">
+                                    <span class="filter-pop__icon">
+                                      <base-icon
+                                        name="filter"
+                                        :size="13"
+                                        :stroke-width="2"
+                                      />
+                                    </span>
                                     添加筛选器
                                   </div>
 
-                                  <div>
+                                  <div class="filter-pop__body">
                                     <el-tabs
                                       :ref="`activeName${index}${index1}${index2}`"
                                       stretch
@@ -629,9 +637,7 @@
                                         label="维度"
                                         :name="`first${index}${index1}${index2}`"
                                       >
-                                        <div
-                                          style="width: 100%; padding: 5px 10px"
-                                        >
+                                        <div class="filter-pop__list">
                                           <el-checkbox-group
                                             v-model="dimFilter"
                                           >
@@ -652,9 +658,7 @@
                                         label="指标"
                                         :name="`second${index}${index1}${index2}`"
                                       >
-                                        <div
-                                          style="width: 100%; padding: 5px 10px"
-                                        >
+                                        <div class="filter-pop__list">
                                           <el-checkbox-group
                                             v-model="metricFilter"
                                           >
@@ -673,29 +677,18 @@
                                     </el-tabs>
                                   </div>
 
-                                  <div class="horizontal-line"></div>
-
-                                  <div style="display: flex">
-                                    <div
-                                      class="one-bgdiv"
-                                      style="
-                                        padding: 0 5px 0px 0px;
-                                        display: flex;
-                                        justify-content: flex-end;
+                                  <div class="filter-pop__footer">
+                                    <el-button
+                                      type="primary"
+                                      size="mini"
+                                      @click.stop="
+                                        sureFilter(
+                                          `filterVisible${index}${index1}${index2}`,
+                                          chatItemInfo
+                                        )
                                       "
+                                      >确定</el-button
                                     >
-                                      <el-button
-                                        type="primary"
-                                        size="mini"
-                                        @click.stop="
-                                          sureFilter(
-                                            `filterVisible${index}${index1}${index2}`,
-                                            chatItemInfo
-                                          )
-                                        "
-                                        >确定</el-button
-                                      >
-                                    </div>
                                   </div>
                                 </div>
                               </el-dropdown-menu>
@@ -2593,8 +2586,8 @@ export default {
   justify-content: center;
   border-radius: 8px;
   color: #fff;
-  background: linear-gradient(135deg, #8b5cf6, #6366f1);
-  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+  background: linear-gradient(135deg, #4f8cff, #2b5cff);
+  box-shadow: 0 2px 6px rgba(43, 92, 255, 0.28);
   flex-shrink: 0;
 }
 
@@ -2731,8 +2724,8 @@ export default {
   margin: 8px 10px 10px;
   padding: 12px 16px;
   border-radius: 10px;
-  background: linear-gradient(130deg, #faf9ff 0%, #f6f7ff 55%, #f4fbff 100%);
-  border: 1px solid rgba(139, 92, 246, 0.1);
+  background: linear-gradient(130deg, #f8fbff 0%, #f5f9ff 55%, #f3fbfe 100%);
+  border: 1px solid rgba(43, 92, 255, 0.08);
 }
 
 .userPanel {
@@ -2792,20 +2785,19 @@ export default {
   height: 44px;
   color: #5b5e7a;
   font-weight: 500;
-  border: 1px solid rgba(99, 102, 241, 0.18);
+  border: 1px solid rgba(43, 92, 255, 0.14);
   border-radius: 12px;
-  /* 水波纹式光晕: 多彩渐变底自左向右流动 */
+  /* 水波纹式光晕: 同色系蓝调渐变自左向右缓慢流动 */
   background: linear-gradient(
     100deg,
-    #eef2ff 0%,
-    #ede9fe 20%,
-    #e0f2fe 40%,
-    #ecfeff 55%,
-    #ede9fe 75%,
-    #eef2ff 100%
+    #f0f6ff 0%,
+    #e9f2ff 30%,
+    #e7f6fd 50%,
+    #e9f2ff 70%,
+    #f0f6ff 100%
   );
   background-size: 220% 100%;
-  animation: think-wave 2.6s ease-in-out infinite;
+  animation: think-wave 5.5s ease-in-out infinite;
 }
 
 /* 高光扫过(水波光晕) */
@@ -2819,10 +2811,10 @@ export default {
   background: linear-gradient(
     105deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.75) 50%,
+    rgba(255, 255, 255, 0.5) 50%,
     transparent 100%
   );
-  animation: think-shine 2.2s ease-in-out infinite;
+  animation: think-shine 4.8s ease-in-out infinite;
   pointer-events: none;
 }
 
@@ -2842,7 +2834,7 @@ export default {
   0% {
     left: -70%;
   }
-  60% {
+  45% {
     left: 120%;
   }
   100% {
@@ -2863,19 +2855,19 @@ export default {
 }
 
 .aiThinkCollapse ::v-deep .el-collapse-item__header {
-  background: linear-gradient(120deg, #f5f3ff 0%, #eef2ff 45%, #f0f9ff 100%);
+  background: linear-gradient(120deg, #f4f8ff 0%, #eef5ff 50%, #f0faff 100%);
   padding: 10px 24px;
   height: 44px;
-  color: #4c4f69;
-  border: 1px solid rgba(139, 92, 246, 0.14);
+  color: #4c5670;
+  border: 1px solid rgba(43, 92, 255, 0.12);
   border-radius: 12px;
   transition: box-shadow 0.2s ease, border-color 0.2s ease,
     transform 0.2s ease;
 }
 
 .aiThinkCollapse ::v-deep .el-collapse-item__header:hover {
-  border-color: rgba(139, 92, 246, 0.32);
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.14);
+  border-color: rgba(43, 92, 255, 0.28);
+  box-shadow: 0 4px 14px rgba(43, 92, 255, 0.12);
   transform: translateY(-1px);
 }
 
@@ -3237,6 +3229,115 @@ export default {
 
 .filterPanel ::v-deep .el-checkbox__label {
   font-size: 12px;
+}
+
+/* ===== 添加筛选器卡片 ===== */
+.filter-pop-menu {
+  padding: 0 !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(43, 92, 255, 0.1) !important;
+  box-shadow: 0 12px 32px rgba(30, 60, 120, 0.14) !important;
+  overflow: hidden;
+}
+
+.filter-pop {
+  width: 264px;
+}
+
+.filter-pop__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2c3550;
+  background: linear-gradient(120deg, #f4f8ff 0%, #f0f7ff 60%, #f2fbfe 100%);
+  border-bottom: 1px solid rgba(43, 92, 255, 0.08);
+}
+
+.filter-pop__icon {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  color: #fff;
+  background: linear-gradient(135deg, #4f8cff, #2b5cff);
+  box-shadow: 0 2px 5px rgba(43, 92, 255, 0.25);
+  flex-shrink: 0;
+}
+
+.filter-pop__body {
+  padding: 4px 8px 0;
+}
+
+.filter-pop__body ::v-deep .el-tabs__header {
+  margin-bottom: 6px;
+}
+
+.filter-pop__body ::v-deep .el-tabs__item {
+  font-size: 12.5px;
+  height: 36px;
+  line-height: 36px;
+  color: #66758a;
+  transition: color 0.2s ease;
+}
+
+.filter-pop__body ::v-deep .el-tabs__item.is-active {
+  color: var(--brand, #2b5cff);
+  font-weight: 600;
+}
+
+.filter-pop__body ::v-deep .el-tabs__active-bar {
+  background: linear-gradient(90deg, #3b82f6, #2b5cff);
+  height: 3px;
+  border-radius: 3px;
+}
+
+.filter-pop__body ::v-deep .el-tabs__nav-wrap::after {
+  height: 1px;
+  background-color: rgba(43, 92, 255, 0.08);
+}
+
+.filter-pop__list {
+  width: 100%;
+  max-height: 180px;
+  overflow-y: auto;
+  padding: 2px 8px 6px;
+}
+
+.filter-pop__list .filterPanel {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 0 0 2px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+}
+
+.filter-pop__list .filterPanel:hover {
+  background: rgba(43, 92, 255, 0.05);
+}
+
+.filter-pop__list .filterPanel ::v-deep .el-checkbox__label {
+  font-size: 12.5px;
+  color: #3c465e;
+}
+
+.filter-pop__footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 14px 12px;
+  border-top: 1px solid rgba(43, 92, 255, 0.08);
+  background: #fbfcff;
+}
+
+.filter-pop__footer .el-button--mini {
+  padding: 6px 18px;
+  border-radius: 8px;
 }
 
 .el-popper {
