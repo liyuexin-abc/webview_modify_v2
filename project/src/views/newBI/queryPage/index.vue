@@ -1472,12 +1472,8 @@ export default {
     },
 
     showSQL(viewSql) {
-      // SqlPanel 自带语法高亮与换行渲染，直接展示原始 SQL；
-      // 若后端返回的 SQL 无换行，则用 formatSQL 补充断行
-      this.viewSql =
-        viewSql && viewSql.indexOf("\n") >= 0
-          ? viewSql
-          : this.formatSQL(viewSql || "");
+      // SqlPanel 内置 formatSQL 自动格式化(括号深度感知/子查询缩进),直接传原始 SQL
+      this.viewSql = viewSql || "";
       this.isSqlPage = true;
     },
 

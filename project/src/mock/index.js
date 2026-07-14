@@ -14,14 +14,8 @@ const AGENTS = [
   { code: 'agent_user', name: '用户增长智能体', description: '用户域指标问答' },
 ]
 
-const SQL_DEMO = `SELECT t.region_name AS region,
-       SUM(t.sales_amount) AS sales_amount,
-       COUNT(DISTINCT t.order_id) AS order_cnt
-FROM dws_sales_order_df t
-WHERE t.pt_date BETWEEN '2026-01-01' AND '2026-06-30'
-GROUP BY t.region_name
-ORDER BY sales_amount DESC
-LIMIT 10`
+// 模拟后端返回的"未排版单行 SQL"(与生产环境一致),用于验证前端自动格式化
+const SQL_DEMO = "select f.`ptdate` as `ptdate`, f.`org` as `org`, sum(f.`fadianliang`) as `fadianliang` from (select DATE_FORMAT(mainsrc.`data_time`, '%Y-%m-%d') as `ptdate`, mainsrc.`org_name` as `org`, mainsrc.`day_power` as `fadianliang` from `analysis`.`power_org_data` mainsrc) f where 1=1 and f.`ptdate` >= '2024-01-03' and f.`ptdate` <= '2024-01-05' group by f.`ptdate`, f.`org` limit 10 offset 90"
 
 const QUERY_COLUMNS = [
   { key: 'region', name: '地区', unit: '' },

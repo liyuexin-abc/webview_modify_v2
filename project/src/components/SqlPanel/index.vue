@@ -24,6 +24,7 @@
 
 <script>
 import { highlightSQLLines } from '@/utils/sqlHighlight';
+import { formatSQL } from '@/utils/sqlFormat';
 import BaseIcon from '@/components/BaseIcon';
 
 export default {
@@ -34,18 +35,22 @@ export default {
     title: { type: String, default: '' },
     lineNumbers: { type: Boolean, default: true },
     plain: { type: Boolean, default: false }, // 无头部工具栏的简洁模式
+    autoFormat: { type: Boolean, default: true }, // 自动格式化单行/未排版 SQL
   },
   data() {
     return { copied: false };
   },
   computed: {
+    displaySql() {
+      return this.autoFormat ? formatSQL(this.sql) : this.sql;
+    },
     lines() {
-      return highlightSQLLines(this.sql);
+      return highlightSQLLines(this.displaySql);
     },
   },
   methods: {
     copySQL() {
-      const text = this.sql || '';
+      const text = this.displaySql || '';
       const done = () => {
         this.copied = true;
         setTimeout(() => { this.copied = false; }, 1600);
