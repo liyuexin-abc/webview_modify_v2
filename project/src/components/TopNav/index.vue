@@ -7,20 +7,32 @@
 
 
     <div class="top-nav__actions">
-      <div >
-        <el-button type="text" style="font-size:14px;" @click="showAgent"> 应用端 </el-button>
-      </div>
-      <div style="margin-right:50px;">
-        <el-button type="text" style="font-size:14px;" @click="showManager"> 管理端 </el-button>
+      <div class="top-nav__switch">
+        <button
+          type="button"
+          class="top-nav__switch-item"
+          :class="{ 'is-active': activeSide === 1 }"
+          @click="showAgent"
+        >
+          <base-icon name="message-circle" :size="14" :stroke-width="2" />
+          <span>应用端</span>
+        </button>
+        <button
+          type="button"
+          class="top-nav__switch-item"
+          :class="{ 'is-active': activeSide === 0 }"
+          @click="showManager"
+        >
+          <base-icon name="settings" :size="14" :stroke-width="2" />
+          <span>管理端</span>
+        </button>
       </div>
 
       <el-dropdown trigger="click" @command="handleCommand">
         <div class="top-nav__user">
-          <el-avatar :size="24" :style="{ backgroundColor: '#0073FF', color: 'white' }">
-            {{ avatarText }}
-          </el-avatar>
+          <span class="top-nav__avatar">{{ avatarText }}</span>
           <span class="top-nav__username">{{ displayName }}</span>
-          <i class="el-icon-arrow-down top-nav__arrow" />
+          <base-icon name="chevron-down" :size="13" class="top-nav__arrow" />
         </div>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="logout">退出登录</el-dropdown-item>
@@ -37,6 +49,7 @@ export default {
   data() {
     return {
       userInfo: getUserInfo() || {},
+      activeSide: 1, // 1=应用端 0=管理端(与父组件 page 默认值保持一致)
     }
   },
   computed: {
@@ -70,10 +83,12 @@ export default {
 
   methods: {
     showAgent(){
+      this.activeSide = 1;
       this.$emit('openPage', 1);
     },
 
     showManager(){
+      this.activeSide = 0;
       this.$emit('openPage', 0);
     },
 
@@ -122,7 +137,52 @@ export default {
   .top-nav__actions {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 20px;
+  }
+
+  .top-nav__switch {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px;
+    background: #f1f4f9;
+    border-radius: 999px;
+  }
+
+  .top-nav__switch-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 30px;
+    padding: 0 16px;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    font-size: 13px;
+    font-weight: 500;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+
+    .base-icon {
+      opacity: 0.75;
+    }
+
+    &:hover {
+      color: var(--brand, #2b5cff);
+    }
+
+    &.is-active {
+      background: #fff;
+      color: var(--brand, #2b5cff);
+      font-weight: 600;
+      box-shadow: 0 1px 4px rgba(30, 41, 59, 0.12);
+
+      .base-icon {
+        opacity: 1;
+      }
+    }
   }
 
   .top-nav__user {
@@ -137,6 +197,20 @@ export default {
         color: #0073ff;
       }
     }
+  }
+
+  .top-nav__avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--accent-gradient, linear-gradient(135deg, #3b82f6, #06b6d4));
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
   }
 
   .top-nav__username {

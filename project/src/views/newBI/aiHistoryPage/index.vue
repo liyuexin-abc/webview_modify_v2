@@ -1,58 +1,38 @@
 <template>
-  <div style="height: 100%" class="my-custom-style">
-    <div
-      style="
-        text-align: left;
-        font-size: 13px;
-        display: flex;
-        align-items: center;
-      "
-    >
-      <RecordHistory class="agent-sidebar__history-icon" />
-      <span style="font-weight: bold">&nbsp;&nbsp;历史记录</span>
+  <div class="history-sidebar my-custom-style">
+    <div class="history-sidebar__header">
+      <span class="history-sidebar__header-badge">
+        <base-icon name="history" :size="14" :stroke-width="2" />
+      </span>
+      <span>历史记录</span>
     </div>
 
-    <div
-      style="
-        max-height: 95%;
-        height: 95%;
-        overflow-y: auto;
-        overflow-x: hidden;
-        margin-top: 5px;
-      "
-      class="no-scrollbar"
-    >
-      <div
-        v-for="item in chatHistoryListItem"
-        :key="item.key"
-        style="margin-bottom: 5px"
-      >
-        <el-collapse class="aiCollapse">
-          <el-collapse-item :name="item.key" v-if="item.records.length > 0">
-            <span slot="title">{{ item.name }}</span>
-            <div
-              v-for="record in item.records"
-              :key="record.id"
-              style="text-align: left; padding: 0 10px 0 10px; font-size: 14px"
-            >
-              <el-button
-                style="
-                  padding: 5px;
-                  color: black;
-                  width: 100%;
-                  text-align: left;
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-                  white-space: nowrap;
-                "
-                type="text"
-                class="my-btn"
-                @click="getChatHistoryListDetail(record)"
-                >{{ record.chatName }}</el-button
-              >
-            </div>
-          </el-collapse-item>
-        </el-collapse>
+    <div class="history-sidebar__list no-scrollbar">
+      <template v-for="item in chatHistoryListItem">
+        <div v-if="item.records.length > 0" :key="item.key" class="history-sidebar__group">
+          <div class="history-sidebar__group-label">{{ item.name }}</div>
+
+          <div
+            v-for="record in item.records"
+            :key="record.chatSessionId"
+            class="history-sidebar__item"
+            :title="record.chatName"
+            @click="getChatHistoryListDetail(record)"
+          >
+            <base-icon
+              name="message-plus"
+              :size="13"
+              :stroke-width="1.8"
+              class="history-sidebar__item-icon"
+            />
+            <span class="history-sidebar__item-name">{{ record.chatName }}</span>
+          </div>
+        </div>
+      </template>
+
+      <div v-if="isAllEmpty" class="history-sidebar__empty">
+        <base-icon name="clock" :size="22" :stroke-width="1.6" />
+        <span>暂无历史对话</span>
       </div>
     </div>
   </div>
@@ -63,17 +43,22 @@ import {
   getChatHistoryListAPI,
   getChatHistoryListDetailAPI,
 } from "@/api/smartQuery/smartQueryAPI";
-import RecordHistory from "@/components/svgs/RecordHistory.vue";
 
 export default {
   name: "aiHistoryPage",
-  components: {
-    RecordHistory,
-  },
   data() {
     return {
       chatHistoryListItem: [],
     };
+  },
+
+  computed: {
+    isAllEmpty() {
+      return (
+        this.chatHistoryListItem.length === 0 ||
+        this.chatHistoryListItem.every((item) => item.records.length === 0)
+      );
+    },
   },
 
   mounted() {
@@ -188,57 +173,104 @@ export default {
 </script>
 
 <style scoped lang="scss">
-/*.collapse-title {
-  flex: 1 0 90%; 
-  order: 1; 
-  text-align: left;
-}*/
-
-/* 将箭头图标的 flex 顺序提前 */
-.aiCollapse ::v-deep .el-collapse-item__header {
-  flex: 1 0 auto;
-  order: -1; /* order 值越小越靠前，将箭头移至最左侧 */
-  height: 30px;
-  border-bottom: 0;
-  background: transparent;
+.history-sidebar {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
-.aiCollapse ::v-deep .el-collapse-item__arrow {
-  margin: 0 2px 0 auto;
-}
-
-.aiCollapse {
-  border-top: 0px;
-  border-bottom: 0px;
-}
-
-.aiCollapse ::v-deep .el-collapse-item__content {
-  padding-bottom: 0;
-}
-
-.aiCollapse ::v-deep .el-collapse-item__wrap {
-  background: transparent;
-  border-bottom: 0;
-}
-
-.aiCollapse ::v-deep .el-collapse-item__header {
-  height: 24px;
-  line-height: 24px;
-}
-
-.aiCollapse ::v-deep .my-btn:hover {
-  color: #95c5fd !important;
-}
-
-.agent-sidebar__history-icon {
+.history-sidebar__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 2px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #1e293b);
   flex-shrink: 0;
-  width: 16px;
-  height: 16px;
+}
 
-  svg {
-    display: block;
-    width: 100%;
-    height: 100%;
+.history-sidebar__header-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  color: #fff;
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.25);
+}
+
+.history-sidebar__list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.history-sidebar__group {
+  margin-bottom: 10px;
+}
+
+.history-sidebar__group-label {
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-muted, #94a3b8);
+  text-align: left;
+}
+
+.history-sidebar__item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+
+  &:hover {
+    background: rgba(43, 92, 255, 0.06);
+
+    .history-sidebar__item-name {
+      color: var(--brand, #2b5cff);
+    }
+
+    .history-sidebar__item-icon {
+      color: var(--brand, #2b5cff);
+    }
   }
+}
+
+.history-sidebar__item-icon {
+  flex-shrink: 0;
+  color: var(--text-muted, #94a3b8);
+  transition: color 0.15s;
+}
+
+.history-sidebar__item-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--text-secondary, #475569);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+  transition: color 0.15s;
+}
+
+.history-sidebar__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 8px;
+  font-size: 12px;
+  color: var(--text-muted, #94a3b8);
 }
 </style>

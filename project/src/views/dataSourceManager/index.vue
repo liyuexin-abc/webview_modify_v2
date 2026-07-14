@@ -30,10 +30,9 @@
               </el-select>
             </div>
             <div style="margin-left: 10px">
-              <el-button
-                icon="el-icon-refresh"
-                @click="getDataSourceList"
-              ></el-button>
+              <el-button @click="getDataSourceList"
+                ><base-icon name="refresh" :size="14"
+              /></el-button>
             </div>
           </div>
           <div style="width: 100%"></div>
@@ -41,7 +40,7 @@
           <div style="text-align: right">
             <div>
               <el-button type="primary" @click="newDataSourceClick()"
-                ><i class="el-icon-plus"></i>&nbsp;新建数据源</el-button
+                ><base-icon name="plus" :size="14" />&nbsp;新建数据源</el-button
               >
             </div>
           </div>
@@ -126,49 +125,23 @@
                 >
                   <template slot-scope="scope">
                     <el-tooltip content="编辑" placement="top">
-                      <el-button
-                        type="text"
-                        icon="el-icon-edit"
-                        @click="editDataSourceClick(scope.row)"
-                      >
-                      </el-button>
+                      <el-button type="text" class="op-icon-btn" @click="editDataSourceClick(scope.row)"><base-icon name="edit" :size="15" /></el-button>
                     </el-tooltip>
 
                     <el-tooltip content="采集" placement="top">
-                      <el-button
-                        type="text"
-                        icon="el-icon-coin"
-                        @click="collectClick(scope.row)"
-                      >
-                      </el-button>
+                      <el-button type="text" class="op-icon-btn" @click="collectClick(scope.row)"><base-icon name="database" :size="15" /></el-button>
                     </el-tooltip>
 
                     <el-tooltip content="元数据" placement="top">
-                      <el-button
-                        type="text"
-                        icon="el-icon-files"
-                        @click="metaDataClick(scope.row)"
-                      >
-                      </el-button>
+                      <el-button type="text" class="op-icon-btn" @click="metaDataClick(scope.row)"><base-icon name="layers" :size="15" /></el-button>
                     </el-tooltip>
 
                     <el-tooltip content="采集历史" placement="top">
-                      <el-button
-                        type="text"
-                        icon="el-icon-document"
-                        @click="collectHistoryClick(scope.row)"
-                      >
-                      </el-button>
+                      <el-button type="text" class="op-icon-btn" @click="collectHistoryClick(scope.row)"><base-icon name="history" :size="15" /></el-button>
                     </el-tooltip>
 
                     <el-tooltip content="删除" placement="top">
-                      <el-button
-                        type="text"
-                        style="color: red"
-                        icon="el-icon-delete"
-                        @click="deleteDataSource(scope.row)"
-                      >
-                      </el-button>
+                      <el-button type="text" class="op-icon-btn is-danger" @click="deleteDataSource(scope.row)"><base-icon name="trash" :size="15" /></el-button>
                     </el-tooltip>
                   </template>
                 </el-table-column>

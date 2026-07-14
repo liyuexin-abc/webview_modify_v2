@@ -76,9 +76,8 @@
 
             <div style="text-align: right">
               <el-button
-                icon="el-icon-refresh"
                 @click="getFieldMappingList"
-              ></el-button>
+              ><base-icon name="refresh" :size="14" /></el-button>
             </div>
           </div>
 
@@ -232,22 +231,11 @@
                 >
                   <template slot-scope="scope">
                     <el-tooltip content="字段设置" placement="top">
-                      <el-button
-                        type="text"
-                        icon="el-icon-setting"
-                        @click="openSemanticPageClick(scope.row)"
-                      >
-                      </el-button>
+                      <el-button type="text" class="op-icon-btn" @click="openSemanticPageClick(scope.row)"><base-icon name="settings" :size="15" /></el-button>
                     </el-tooltip>
 
                     <el-tooltip content="删除" placement="top">
-                      <el-button
-                        type="text"
-                        style="color: red"
-                        icon="el-icon-delete"
-                        @click="deleteFieldMappingsTables(scope.row)"
-                      >
-                      </el-button>
+                      <el-button type="text" class="op-icon-btn is-danger" @click="deleteFieldMappingsTables(scope.row)"><base-icon name="trash" :size="15" /></el-button>
                     </el-tooltip>
                   </template>
                 </el-table-column>

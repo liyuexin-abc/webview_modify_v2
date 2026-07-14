@@ -52,9 +52,8 @@
 
             <div style="margin-left: 10px; text-align: right">
               <el-button
-                icon="el-icon-refresh"
                 @click="getMetricDataList"
-              ></el-button>
+              ><base-icon name="refresh" :size="14" /></el-button>
             </div>
           </div>
 
@@ -62,7 +61,7 @@
 
           <div>
             <el-button type="primary" @click="nenMetricDataClick()"
-              ><i class="el-icon-plus"></i>&nbsp;新建指标</el-button
+              ><base-icon name="plus" :size="14" />&nbsp;新建指标</el-button
             >
           </div>
         </div>
@@ -200,42 +199,19 @@
                 >
                   <template slot-scope="scope">
                     <el-tooltip content="编辑" placement="top">
-                      <el-button
-                        type="text"
-                        icon="el-icon-edit"
-                        @click="editMetricDataClick(scope.row)"
-                      >
-                      </el-button>
+                      <el-button type="text" class="op-icon-btn" @click="editMetricDataClick(scope.row)"><base-icon name="edit" :size="15" /></el-button>
                     </el-tooltip>
 
                     <el-tooltip content="下线" placement="top">
-                      <el-button
-                        type="text"
-                        icon="el-icon-sort-down"
-                        @click="offlineMetricData(scope.row)"
-                        v-if="scope.row.status == 2"
-                      >
-                      </el-button>
+                      <el-button type="text" class="op-icon-btn" @click="offlineMetricData(scope.row)" v-if="scope.row.status == 2"><base-icon name="sort-desc" :size="15" /></el-button>
                     </el-tooltip>
 
                     <el-tooltip content="上线" placement="top">
-                      <el-button
-                        type="text"
-                        icon="el-icon-sort-up"
-                        @click="onlineMetricData(scope.row)"
-                        v-if="scope.row.status == 3"
-                      >
-                      </el-button>
+                      <el-button type="text" class="op-icon-btn" @click="onlineMetricData(scope.row)" v-if="scope.row.status == 3"><base-icon name="sort-asc" :size="15" /></el-button>
                     </el-tooltip>
 
                     <el-tooltip content="删除" placement="top">
-                      <el-button
-                        type="text"
-                        style="color: red"
-                        icon="el-icon-delete"
-                        @click="deleteMetricData(scope.row)"
-                      >
-                      </el-button>
+                      <el-button type="text" class="op-icon-btn is-danger" @click="deleteMetricData(scope.row)"><base-icon name="trash" :size="15" /></el-button>
                     </el-tooltip>
                   </template>
                 </el-table-column>

@@ -35,9 +35,8 @@
 
             <div style="margin-left: 10px">
               <el-button
-                icon="el-icon-refresh"
                 @click="getDimensionList"
-              ></el-button>
+              ><base-icon name="refresh" :size="14" /></el-button>
             </div>
           </div>
 
@@ -45,7 +44,7 @@
 
           <div style="text-align: right">
             <el-button type="primary" @click="newDimensionClick"
-              ><i class="el-icon-plus"></i>&nbsp;新建维度</el-button
+              ><base-icon name="plus" :size="14" />&nbsp;新建维度</el-button
             >
           </div>
         </div>
@@ -137,42 +136,19 @@
                 >
                   <template slot-scope="scope">
                     <el-tooltip content="编辑" placement="top">
-                      <el-button
-                        type="text"
-                        icon="el-icon-edit"
-                        @click="editDimensionClick(scope.row)"
-                      >
-                      </el-button>
+                      <el-button type="text" class="op-icon-btn" @click="editDimensionClick(scope.row)"><base-icon name="edit" :size="15" /></el-button>
                     </el-tooltip>
 
                     <el-tooltip content="下线" placement="top">
-                      <el-button
-                        type="text"
-                        icon="el-icon-sort-down"
-                        @click="offlineDimensionData(scope.row)"
-                        v-if="scope.row.status == 2"
-                      >
-                      </el-button>
+                      <el-button type="text" class="op-icon-btn" @click="offlineDimensionData(scope.row)" v-if="scope.row.status == 2"><base-icon name="sort-desc" :size="15" /></el-button>
                     </el-tooltip>
 
                     <el-tooltip content="上线" placement="top">
-                      <el-button
-                        type="text"
-                        icon="el-icon-sort-up"
-                        @click="onlineDimensionData(scope.row)"
-                        v-if="scope.row.status == 3"
-                      >
-                      </el-button>
+                      <el-button type="text" class="op-icon-btn" @click="onlineDimensionData(scope.row)" v-if="scope.row.status == 3"><base-icon name="sort-asc" :size="15" /></el-button>
                     </el-tooltip>
 
                     <el-tooltip content="删除" placement="top">
-                      <el-button
-                        type="text"
-                        style="color: red"
-                        icon="el-icon-delete"
-                        @click="deleteDimensionData(scope.row)"
-                      >
-                      </el-button>
+                      <el-button type="text" class="op-icon-btn is-danger" @click="deleteDimensionData(scope.row)"><base-icon name="trash" :size="15" /></el-button>
                     </el-tooltip>
                   </template>
                 </el-table-column>

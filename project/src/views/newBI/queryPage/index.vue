@@ -12,23 +12,34 @@
     class="my-custom-style"
   >
     <div v-if="isNewDialog" style="height: 100%">
-      <div
-        style="
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          height: 100%;
-          align-items: center;
-        "
-      >
-        <div style="font-size: 30px; display: flex; justify-content: center">
-          你好，欢迎使用&nbsp;
-          <div style="color: blue">{{ selectedAgent.name }}</div>
-          &nbsp;智能体
+      <div class="welcome-hero">
+        <div class="welcome-hero__badge">
+          <base-icon name="sparkles" :size="26" :stroke-width="1.8" />
+        </div>
+        <div class="welcome-hero__title">
+          你好，欢迎使用
+          <span class="welcome-hero__agent">{{
+            selectedAgent ? selectedAgent.name : ""
+          }}</span>
         </div>
 
-        <div style="font-size: 20px; color: silver; text-align: left">
-          你好，我是{{ selectedAgent.name }}。
+        <div class="welcome-hero__subtitle">
+          用自然语言提问，我会为你完成取数、计算、分析与总结
+        </div>
+
+        <div class="welcome-hero__tips">
+          <span class="welcome-hero__tip">
+            <base-icon name="bar-chart" :size="13" :stroke-width="2" />
+            指标查询
+          </span>
+          <span class="welcome-hero__tip">
+            <base-icon name="trending-up" :size="13" :stroke-width="2" />
+            趋势分析
+          </span>
+          <span class="welcome-hero__tip">
+            <base-icon name="lightbulb" :size="13" :stroke-width="2" />
+            归因总结
+          </span>
         </div>
       </div>
     </div>
@@ -101,22 +112,12 @@
                     <el-collapse-item class="aiThinkCollapse" name="think">
                       <span slot="title" style="width: 100%">
                         <div style="display: flex; align-items: center">
-                          <div
-                            style="
-                              width: 24px;
-                              height: 24px;
-                              background-color: #9ea0f2;
-                              display: flex;
-                              align-items: center;
-
-                              justify-content: center;
-                              border-radius: 50px;
-                            "
-                          >
-                            <i
-                              style="color: white; font-size: 16px"
-                              class="el-icon-check"
-                            ></i>
+                          <div class="think-badge">
+                            <base-icon
+                              name="brain"
+                              :size="14"
+                              :stroke-width="2"
+                            />
                           </div>
                           &nbsp;&nbsp;
                           <div>
@@ -174,15 +175,24 @@
                           <div>
                             <el-button
                               size="mini"
+                              class="toolbar-btn"
                               @click="showSQL(chatItemInfo.viewSql)"
-                              ><i class="el-icon-tickets"></i
-                              >&nbsp;SQL</el-button
+                              ><base-icon
+                                name="file-code"
+                                :size="13"
+                                :stroke-width="2"
+                              />&nbsp;SQL</el-button
                             >
 
                             <el-button
                               size="mini"
+                              class="toolbar-btn"
                               @click="downFile(chatItemInfo)"
-                              ><i class="el-icon-download"></i>&nbsp;下载
+                              ><base-icon
+                                name="download"
+                                :size="13"
+                                :stroke-width="2"
+                              />&nbsp;下载
                             </el-button>
                           </div>
 
@@ -835,12 +845,8 @@
                           </div>
                           &nbsp;&nbsp;
                           <div
-                            class="aiTitleType"
-                            style="
-                              background: rgb(219, 240, 252);
-                              color: rgb(0, 126, 172);
-                              min-width: 46px;
-                            "
+                            class="aiTitleType aiTitleType--compute"
+                            style="min-width: 46px"
                           >
                             计算
                           </div>
@@ -891,12 +897,8 @@
                           </div>
                           &nbsp;&nbsp;
                           <div
-                            class="aiTitleType"
-                            style="
-                              background: rgb(216 235 246)
-                              color: rgb(0, 126, 172);
-                                  min-width: 46px;
-                            "
+                            class="aiTitleType aiTitleType--analyze"
+                            style="min-width: 46px"
                           >
                             分析
                           </div>
@@ -975,16 +977,8 @@
                           </div>
                           &nbsp;&nbsp;
                           <div
-                            class="aiTitleType"
-                            style="
-                              color: rgb(4, 120, 87);
-                              background: linear-gradient(
-                                135deg,
-                                #eff6ff,
-                                #f0fdfa
-                              );
-                              min-width: 46px;
-                            "
+                            class="aiTitleType aiTitleType--summary"
+                            style="min-width: 46px"
                           >
                             总结
                           </div>
@@ -1132,11 +1126,12 @@
           <div style="margin-bottom: 10px">
             <el-button
               :disabled="chatLoading"
-              style="font-size: 14px; padding: 10px; border-radius: 10px"
+              class="send-btn"
               type="primary"
-              icon="el-icon-s-promotion"
               @click="handleEnter"
-            ></el-button>
+            >
+              <base-icon name="send" :size="16" :stroke-width="2" />
+            </el-button>
           </div>
         </div>
       </div>
@@ -1147,37 +1142,18 @@
     <el-dialog
       :show-close="false"
       :close-on-click-modal="false"
-      title="SQL"
+      title="查询 SQL"
       :modal="false"
+      width="640px"
       :visible.sync="isSqlPage"
     >
-      <div class="horizontal-line"></div>
-      <div
-        style="
-          color: white;
-          text-align: left;
-          width: 100%;
-          overflow-y: auto;
-          overflow-x: hidden;
-          max-height: 50vh;
-          padding: 0 10px 0 10px;
-        "
-        class="no-scrollbar"
-      >
-        <div
-          style="padding: 10px; white-space: pre-wrap; background-color: black"
-        >
-          {{ viewSql }}
-        </div>
+      <div style="padding: 0 20px">
+        <sql-panel :sql="viewSql" title="本次查询语句" />
       </div>
 
-      <div class="horizontal-line"></div>
-
-      <div style="margin-top: 10px"></div>
-
-      <div style="display: flex">
+      <div style="display: flex; padding: 14px 20px 16px">
         <div class="one-bgdiv" style="display: flex; justify-content: flex-end">
-          <el-button @click="isSqlPage = false">关闭</el-button>
+          <el-button @click="isSqlPage = false">关 闭</el-button>
         </div>
       </div>
     </el-dialog>
@@ -1196,6 +1172,7 @@ import {
 } from "@/api/metricDataPreview/metricPreviewAPI.js";
 
 import { getUserInfo } from "@/utils/auth";
+import SqlPanel from "@/components/SqlPanel";
 
 import { sendChat, getChatInfo } from "@/api/smartQuery/smartQueryAPI.js";
 import { connectChatWebSocket } from "@/views/smartQuery/utils/chatWebSocket.js";
@@ -1203,7 +1180,7 @@ import { connectChatWebSocket } from "@/views/smartQuery/utils/chatWebSocket.js"
 export default {
   name: "queryPage",
   props: [],
-  components: {},
+  components: { SqlPanel },
   data() {
     return {
       dimFilter: [],
@@ -1522,8 +1499,12 @@ export default {
     },
 
     showSQL(viewSql) {
-      //this.viewSql = viewSql
-      this.viewSql = this.formatSQL(viewSql);
+      // SqlPanel 自带语法高亮与换行渲染，直接展示原始 SQL；
+      // 若后端返回的 SQL 无换行，则用 formatSQL 补充断行
+      this.viewSql =
+        viewSql && viewSql.indexOf("\n") >= 0
+          ? viewSql
+          : this.formatSQL(viewSql || "");
       this.isSqlPage = true;
     },
 
@@ -2552,6 +2533,118 @@ export default {
   width: 86%;
 }
 
+/* ---------- 欢迎页 ---------- */
+.welcome-hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  gap: 14px;
+  padding: 0 24px;
+}
+
+.welcome-hero__badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  color: #fff;
+  background: var(--accent-gradient, linear-gradient(135deg, #3b82f6, #06b6d4));
+  box-shadow: 0 8px 24px rgba(43, 92, 255, 0.28);
+  margin-bottom: 4px;
+}
+
+.welcome-hero__title {
+  font-size: clamp(22px, 2vw, 30px);
+  font-weight: 600;
+  color: var(--text-primary, #1e293b);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.welcome-hero__agent {
+  background: linear-gradient(135deg, #2b5cff, #06b6d4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+}
+
+.welcome-hero__subtitle {
+  font-size: clamp(13px, 1.1vw, 16px);
+  color: var(--text-muted, #94a3b8);
+}
+
+.welcome-hero__tips {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.welcome-hero__tip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 14px;
+  font-size: 12px;
+  color: var(--text-secondary, #475569);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--border-light, #e5eaf1);
+  border-radius: 999px;
+  box-shadow: 0 1px 3px rgba(30, 41, 59, 0.05);
+}
+
+/* ---------- 思考徽标 / 步骤徽标 / 工具按钮 ---------- */
+.think-badge {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: #fff;
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+  flex-shrink: 0;
+}
+
+.toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 8px;
+
+  .base-icon {
+    vertical-align: middle;
+  }
+}
+
+.send-btn {
+  width: 40px;
+  height: 36px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+  border-radius: 12px;
+  background: var(--accent-gradient, linear-gradient(135deg, #3b82f6, #06b6d4));
+  border: none;
+  box-shadow: 0 4px 12px rgba(43, 92, 255, 0.3);
+  transition: all 0.15s;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(43, 92, 255, 0.4);
+  }
+}
+
 /*.no-scrollbar {
   scrollbar-width: none; 
   -ms-overflow-style: none; 
@@ -2563,28 +2656,24 @@ export default {
 }*/
 
 .aiInput {
-  //border: 1px solid #DCDFE6;
-  border-radius: 14px;
-  transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
-  background: transparent;
-  box-shadow: 0 0 2px #00000005, 0 0 4px #0000000a, 0 0 8px #00000014;
+  border-radius: 16px;
+  transition: box-shadow 0.2s cubic-bezier(0.645, 0.045, 0.355, 1),
+    border-color 0.2s;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--border-light, #e5eaf1);
+  box-shadow: 0 4px 20px rgba(30, 41, 59, 0.07);
+  backdrop-filter: blur(8px);
 
-  //width: 100%;
-  //flex: 1;
   outline: none;
-  border: none;
   resize: none;
   font-family: -apple-system, Segoe UI, Roboto, sans-serif;
-  //padding: 20px 20px 8px;
-  font-size: 16px;
-}
+  font-size: 15px;
 
-.aiInput:focus {
-  /* 移除默认的聚焦轮廓（outline） */
-  outline: none;
-  /* 自定义边框颜色 */
-  box-shadow: 0 0 2px #204ce90f, 0 0 4px #204c9c1a, 0 0 8 #204ce92e;
-  border-color: #204ce9;
+  &:focus-within {
+    border-color: rgba(43, 92, 255, 0.4);
+    box-shadow: 0 4px 20px rgba(43, 92, 255, 0.12),
+      0 0 0 3px rgba(43, 92, 255, 0.08);
+  }
 }
 
 .aiInput-bottom {
@@ -2617,22 +2706,27 @@ export default {
   word-break: break-word;
   text-align: left;
   max-width: 80%;
-  padding: 9px 15px;
-  border-radius: 10px;
-  height: 42px;
+  padding: 10px 16px;
+  min-height: 42px;
+  font-size: 14px;
+  line-height: 1.6;
 
-  background: #e3e7fc;
-  border-radius: 9px 0 8px 9px;
-  color: #53555e;
+  background: linear-gradient(135deg, #eaf0ff, #e5f4ff);
+  border: 1px solid rgba(43, 92, 255, 0.14);
+  border-radius: 14px 4px 14px 14px;
+  color: var(--text-primary, #1e293b);
+  box-shadow: 0 1px 3px rgba(43, 92, 255, 0.06);
 }
 
 .aiPanel {
   text-align: left;
   width: 80%;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.92);
   margin-left: 50px;
-  border: 1px solid rgb(232, 234, 237);
-  border-radius: 10px;
+  border: 1px solid var(--border-light, #e5eaf1);
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(30, 41, 59, 0.05);
+  backdrop-filter: blur(6px);
 }
 
 .el-collapse {
@@ -2756,8 +2850,8 @@ export default {
 .aiTitleNo {
   width: 24px;
   height: 24px;
-  border-radius: 50%;
-  background: rgb(59, 130, 246);
+  border-radius: 8px;
+  background: var(--accent-gradient, linear-gradient(135deg, #3b82f6, #06b6d4));
   color: rgb(255, 255, 255);
   font-size: 12px;
   font-weight: 500;
@@ -2765,17 +2859,36 @@ export default {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(43, 92, 255, 0.25);
 }
 
 .aiTitleType {
-  background: rgb(219, 234, 254);
-  color: rgb(29, 78, 216);
-  padding: 2px 3px 2px 3px;
+  background: rgba(59, 130, 246, 0.12);
+  color: #1d4ed8;
   height: 20px;
   display: flex;
   align-content: center;
   padding: 2px 10px;
   flex-wrap: wrap;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  justify-content: center;
+
+  &--compute {
+    background: rgba(6, 182, 212, 0.12);
+    color: #0e7490;
+  }
+
+  &--analyze {
+    background: rgba(139, 92, 246, 0.12);
+    color: #6d28d9;
+  }
+
+  &--summary {
+    background: rgba(16, 185, 129, 0.12);
+    color: #047857;
+  }
 }
 
 .queryDimPanel {

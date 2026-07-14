@@ -34,9 +34,8 @@
 
             <div style="margin-left: 10px">
               <el-button
-                icon="el-icon-refresh"
                 @click="getDataModelList"
-              ></el-button>
+              ><base-icon name="refresh" :size="14" /></el-button>
             </div>
           </div>
 
@@ -45,7 +44,7 @@
           <div style="text-align: right">
             <div>
               <el-button type="primary" @click="newDataModelClick()"
-                ><i class="el-icon-plus"></i>&nbsp;新建模型</el-button
+                ><base-icon name="plus" :size="14" />&nbsp;新建模型</el-button
               >
             </div>
           </div>
@@ -128,22 +127,11 @@
                 >
                   <template slot-scope="scope">
                     <el-tooltip content="编辑" placement="top">
-                      <el-button
-                        type="text"
-                        icon="el-icon-edit"
-                        @click="editDataModelClick(scope.row)"
-                      >
-                      </el-button>
+                      <el-button type="text" class="op-icon-btn" @click="editDataModelClick(scope.row)"><base-icon name="edit" :size="15" /></el-button>
                     </el-tooltip>
 
                     <el-tooltip content="删除" placement="top">
-                      <el-button
-                        type="text"
-                        style="color: red"
-                        icon="el-icon-delete"
-                        @click="deleteDataModel(scope.row)"
-                      >
-                      </el-button>
+                      <el-button type="text" class="op-icon-btn is-danger" @click="deleteDataModel(scope.row)"><base-icon name="trash" :size="15" /></el-button>
                     </el-tooltip>
                   </template>
                 </el-table-column>
