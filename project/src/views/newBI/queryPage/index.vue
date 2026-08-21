@@ -12,23 +12,34 @@
     class="my-custom-style"
   >
     <div v-if="isNewDialog" style="height: 100%">
-      <div
-        style="
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          height: 100%;
-          align-items: center;
-        "
-      >
-        <div style="font-size: 30px; display: flex; justify-content: center">
-          你好，欢迎使用&nbsp;
-          <div style="color: blue">{{ selectedAgent.name }}</div>
-          &nbsp;智能体
+      <div class="welcome-hero">
+        <div class="welcome-hero__badge">
+          <base-icon name="sparkles" :size="26" :stroke-width="1.8" />
+        </div>
+        <div class="welcome-hero__title">
+          你好，欢迎使用
+          <span class="welcome-hero__agent">{{
+            selectedAgent ? selectedAgent.name : ""
+          }}</span>
         </div>
 
-        <div style="font-size: 20px; color: silver; text-align: left">
-          你好，我是{{ selectedAgent.name }}。
+        <div class="welcome-hero__subtitle">
+          用自然语言提问，我会为你完成取数、计算、分析与总结
+        </div>
+
+        <div class="welcome-hero__tips">
+          <span class="welcome-hero__tip">
+            <base-icon name="bar-chart" :size="13" :stroke-width="2" />
+            指标查询
+          </span>
+          <span class="welcome-hero__tip">
+            <base-icon name="trending-up" :size="13" :stroke-width="2" />
+            趋势分析
+          </span>
+          <span class="welcome-hero__tip">
+            <base-icon name="lightbulb" :size="13" :stroke-width="2" />
+            归因总结
+          </span>
         </div>
       </div>
     </div>
@@ -101,22 +112,12 @@
                     <el-collapse-item class="aiThinkCollapse" name="think">
                       <span slot="title" style="width: 100%">
                         <div style="display: flex; align-items: center">
-                          <div
-                            style="
-                              width: 24px;
-                              height: 24px;
-                              background-color: #9ea0f2;
-                              display: flex;
-                              align-items: center;
-
-                              justify-content: center;
-                              border-radius: 50px;
-                            "
-                          >
-                            <i
-                              style="color: white; font-size: 16px"
-                              class="el-icon-check"
-                            ></i>
+                          <div class="think-badge">
+                            <base-icon
+                              name="brain"
+                              :size="14"
+                              :stroke-width="2"
+                            />
                           </div>
                           &nbsp;&nbsp;
                           <div>
@@ -125,7 +126,7 @@
                         </div>
                       </span>
 
-                      <div style="padding: 10px" class="think">
+                      <div class="think think-content">
                         <markdown-it-vue
                           :content="chatItemInfo.think"
                         ></markdown-it-vue>
@@ -142,7 +143,7 @@
                       <span slot="title" style="width: 100%">
                         <div style="display: flex; align-items: center">
                           <div class="aiTitleNo">
-                            {{ chatItemInfo.itemType }}
+                            {{ chatItemInfo.stepNo || chatItemInfo.itemType }}
                           </div>
                           &nbsp;&nbsp;
                           <div class="aiTitleType" style="min-width: 46px">
@@ -174,15 +175,24 @@
                           <div>
                             <el-button
                               size="mini"
+                              class="toolbar-btn"
                               @click="showSQL(chatItemInfo.viewSql)"
-                              ><i class="el-icon-tickets"></i
-                              >&nbsp;SQL</el-button
+                              ><base-icon
+                                name="file-code"
+                                :size="13"
+                                :stroke-width="2"
+                              />&nbsp;SQL</el-button
                             >
 
                             <el-button
                               size="mini"
+                              class="toolbar-btn"
                               @click="downFile(chatItemInfo)"
-                              ><i class="el-icon-download"></i>&nbsp;下载
+                              ><base-icon
+                                name="download"
+                                :size="13"
+                                :stroke-width="2"
+                              />&nbsp;下载
                             </el-button>
                           </div>
 
@@ -224,10 +234,10 @@
                             align-items: center;
                           "
                         >
-                          <div style="display: flex; align-items: center">
-                            <div style="width: 60px">维度</div>
-                            
-                            <div style="display: flex;align-items: center;flex-wrap: wrap;gap: 5px; width:90%;">
+                          <div class="query-row__main">
+                            <div class="query-row__label">维度</div>
+
+                            <div class="query-row__tags">
                             <div
                               v-for="dim in chatItemInfo.other.dimList"
                               :key="dim.name"
@@ -242,11 +252,10 @@
                                 >
                                 </el-checkbox>-->
                               </div>
-                              <el-tooltip :content="dim.name" placement="top">
-                              <div style="max-width:80px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
-                                
-                                {{dim.name}} </div>
-                              </el-tooltip>
+                              <truncate-tip
+                                class="queryDimPanel__text"
+                                :text="dim.name"
+                              />
 
                               <div
                                 @click="
@@ -311,11 +320,10 @@
                             align-items: center;
                           "
                         >
-                          <div style="display: flex; align-items: center">
-                            <div style="width: 60px">指标</div>
-                            
-                            
-                            <div style="display: flex;align-items: center;flex-wrap: wrap;gap: 5px;width:90%;">
+                          <div class="query-row__main">
+                            <div class="query-row__label">指标</div>
+
+                            <div class="query-row__tags">
                             <div
                               v-for="mertic in chatItemInfo.other.merticList"
                               :key="mertic.name"
@@ -331,9 +339,10 @@
                                 >
                                 </el-checkbox>-->
                               </div>
-                              <el-tooltip :content="mertic.name" placement="top">
-                              <div style="max-width:80px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ mertic.name }}</div>
-                              </el-tooltip>
+                              <truncate-tip
+                                class="queryDimPanel__text"
+                                :text="mertic.name"
+                              />
                               <div
                                 @click="
                                   (val) =>
@@ -386,190 +395,116 @@
                           </div>
                         </div>
 
-                        <div
-                          style="
-                            padding: 5px 20px;
-                            background: #fafbfe;
-                            display: flex;
-                            justify-content: space-between;
-                            border-bottom: 1px solid rgb(234 234 234);
-                          "
-                        >
-                          <div style="display: flex; width: 100%">
-                            <div style="width: 60px">筛选器</div>
+                        <div class="query-row query-row--filter">
+                          <div class="query-row__main">
+                            <div class="query-row__label">筛选器</div>
 
-                            <div style="width: 90%">
-                              <div
-                                style="
-                                  display: flex;
-                                  flex-wrap: wrap;
-                                  gap: 10px;
-                                "
-                              >
-                                <div style="display: flex">
-                                  <div>
-                                    <el-select
-                                      placeholder="日期"
-                                      v-model="chatItemInfo.dateGranularity"
-                                      style="width: 100px; border-radius: 0px"
-                                      class="selectStyle"
+                            <div class="filter-area">
+                              <div class="filter-conds">
+                                <!-- 日期条件（固定第一个） -->
+                                <div class="filter-cond">
+                                  <el-select
+                                    placeholder="日期"
+                                    v-model="chatItemInfo.dateGranularity"
+                                    class="filter-cond__field selectStyle"
+                                  >
+                                    <el-option
+                                      v-for="item in granularityEnum"
+                                      :key="item.value"
+                                      :label="item.name"
+                                      :value="item.value"
                                     >
-                                      <el-option
-                                        v-for="item in granularityEnum"
-                                        :key="item.value"
-                                        :label="item.name"
-                                        :value="item.value"
-                                      >
-                                      </el-option>
-                                    </el-select>
-                                  </div>
+                                    </el-option>
+                                  </el-select>
 
                                   <el-date-picker
                                     v-model="chatItemInfo.dataRange"
                                     type="daterange"
+                                    range-separator="至"
                                     start-placeholder="开始日期"
                                     end-placeholder="结束日期"
                                     :value-format="'yyyy-MM-dd'"
-                                    style="width: 250px; border-radius: 0px"
-                                    class="myDate"
+                                    class="filter-cond__date myDate"
                                   >
                                     <template slot="suffix">
                                       <i
                                         class="el-input__icon el-icon-date"
                                       ></i>
-                                      <!-- 自定义图标位置 -->
                                     </template>
                                   </el-date-picker>
-
-                                  <!--<div
-                                    style="
-                                      width: 30px;
-                                      height: 30px;
-                                      margin-left: 10px;
-                                    "
-                                  ></div>-->
                                 </div>
 
+                                <!-- 动态筛选条件 -->
                                 <div
                                   v-for="(
                                     filter, index3
                                   ) in chatItemInfo.filter"
                                   :key="index3"
-                                  style="display: flex"
+                                  class="filter-cond"
                                 >
-                                  <div class="queryfilterName">
-                                    {{ filter.name }}
-                                  </div>
-                                  <div>
-                                    <el-select
-                                      placeholder="操作"
-                                      v-model="filter.operator"
-                                      style="width: 100px; border-radius: 0px"
-                                      class="selectStyle"
-                                      @change="operatorChange(filter)"
+                                  <truncate-tip
+                                    class="filter-cond__name"
+                                    :text="filter.name"
+                                  />
+
+                                  <el-select
+                                    placeholder="操作"
+                                    v-model="filter.operator"
+                                    class="filter-cond__op selectStyle"
+                                    @change="operatorChange(filter)"
+                                  >
+                                    <el-option
+                                      v-for="item in operatorEnum"
+                                      :key="item.value"
+                                      :label="item.name"
+                                      :value="item.value"
                                     >
-                                      <el-option
-                                        v-for="item in operatorEnum"
-                                        :key="item.value"
-                                        :label="item.name"
-                                        :value="item.value"
-                                      >
-                                      </el-option>
-                                    </el-select>
-                                  </div>
+                                    </el-option>
+                                  </el-select>
 
                                   <!--按照操作符变化输入框和下拉框-->
-                                  <div
+                                  <el-input
                                     v-if="filter.operator <= 9"
-                                    style="position: static"
+                                    v-model="filter.value"
+                                    class="filter-cond__value myinput"
+                                    placeholder="请输入值"
                                   >
-                                    <el-input
-                                      v-model="filter.value"
-                                      style="width: 150px; border-radius: 0px"
-                                      class="myinput"
-                                      placeholder="请输入值"
+                                  </el-input>
+                                  <el-select
+                                    v-else
+                                    placeholder="请选择值"
+                                    v-model="filter.value"
+                                    class="filter-cond__value filter-cond__value--select"
+                                    multiple
+                                    collapse-tags
+                                  >
+                                    <el-option
+                                      v-for="item in filter.diaplayValue"
+                                      :key="item"
+                                      :label="item"
+                                      :value="item"
                                     >
-                                      <template slot="suffix">
-                                        <span
-                                          class="clear-btn"
-                                          @click="
-                                            deleteFilter(index3, chatItemInfo)
-                                          "
-                                        >
-                                          <span class="triangle">
-                                            <span class="x-mark">×</span>
-                                          </span>
-                                        </span>
-                                      </template>
-                                    </el-input>
-                                  </div>
-                                  <!--<div
-                                    v-if="
-                                      filter.type == filterTypeEnum['dim'].value
+                                    </el-option>
+                                  </el-select>
+
+                                  <button
+                                    type="button"
+                                    class="filter-cond__remove"
+                                    title="删除此条件"
+                                    @click.stop="
+                                      deleteFilter(index3, chatItemInfo)
                                     "
-                                  >-->
-                                  <div v-else style="position: static">
-                                    <div>
-                                      <el-select
-                                        placeholder="请选择值"
-                                        v-model="filter.value"
-                                        style="width: 150px; border-radius: 0px"
-                                        class="select-clear-Style"
-                                        multiple
-                                        collapse-tags
-                                      >
-                                        <template slot="prefix">
-                                          <span
-                                            class="clear-btn"
-                                            style="background: transparent"
-                                          >
-                                            <span
-                                              class="triangle"
-                                              @click.stop="
-                                                deleteFilter(
-                                                  index3,
-                                                  chatItemInfo
-                                                )
-                                              "
-                                            >
-                                              <span class="x-mark">×</span>
-                                            </span>
-                                          </span>
-                                        </template>
-
-                                        <el-option
-                                          v-for="item in filter.diaplayValue"
-                                          :key="item"
-                                          :label="item"
-                                          :value="item"
-                                        >
-                                        </el-option>
-                                      </el-select>
-                                    </div>
-                                  </div>
-
-                                  <!--<div style="margin-left: 10px">
-                                    <el-button
-                                      type="text"
-                                      style="
-                                        color: red;
-                                        width: 30px;
-                                        height: 30px;
-                                        line-height: 0px;
-                                      "
-                                      @click="deleteFilter(index3, chatItemInfo)"
-                                      >删除</el-button
-                                    >
-                                  </div>-->
+                                  >
+                                    <i class="el-icon-close"></i>
+                                  </button>
                                 </div>
                               </div>
 
-                              <div style="padding: 5px 0px 0px 0px">
+                              <div class="filter-area__actions">
                                 <el-button
                                   type="primary"
-                                  width="100px"
                                   icon="el-icon-search"
-                                  style="height: 30px; padding: 0px 20px"
+                                  class="filter-area__search"
                                   @click="getMetricsPreview(chatItemInfo)"
                                   >搜索</el-button
                                 >
@@ -601,15 +536,23 @@
                                 ></el-button>
                               </span>
 
-                              <el-dropdown-menu slot="dropdown">
-                                <div style="width: 250px; padding: 8px">
-                                  <div
-                                    style="padding: 0 0 0 10px; font-size: 12px"
-                                  >
+                              <el-dropdown-menu
+                                slot="dropdown"
+                                class="filter-pop-menu"
+                              >
+                                <div class="filter-pop">
+                                  <div class="filter-pop__header">
+                                    <span class="filter-pop__icon">
+                                      <base-icon
+                                        name="filter"
+                                        :size="13"
+                                        :stroke-width="2"
+                                      />
+                                    </span>
                                     添加筛选器
                                   </div>
 
-                                  <div>
+                                  <div class="filter-pop__body">
                                     <el-tabs
                                       :ref="`activeName${index}${index1}${index2}`"
                                       stretch
@@ -619,9 +562,7 @@
                                         label="维度"
                                         :name="`first${index}${index1}${index2}`"
                                       >
-                                        <div
-                                          style="width: 100%; padding: 5px 10px"
-                                        >
+                                        <div class="filter-pop__list">
                                           <el-checkbox-group
                                             v-model="dimFilter"
                                           >
@@ -642,9 +583,7 @@
                                         label="指标"
                                         :name="`second${index}${index1}${index2}`"
                                       >
-                                        <div
-                                          style="width: 100%; padding: 5px 10px"
-                                        >
+                                        <div class="filter-pop__list">
                                           <el-checkbox-group
                                             v-model="metricFilter"
                                           >
@@ -663,29 +602,18 @@
                                     </el-tabs>
                                   </div>
 
-                                  <div class="horizontal-line"></div>
-
-                                  <div style="display: flex">
-                                    <div
-                                      class="one-bgdiv"
-                                      style="
-                                        padding: 0 5px 0px 0px;
-                                        display: flex;
-                                        justify-content: flex-end;
+                                  <div class="filter-pop__footer">
+                                    <el-button
+                                      type="primary"
+                                      size="mini"
+                                      @click.stop="
+                                        sureFilter(
+                                          `filterVisible${index}${index1}${index2}`,
+                                          chatItemInfo
+                                        )
                                       "
+                                      >确定</el-button
                                     >
-                                      <el-button
-                                        type="primary"
-                                        size="mini"
-                                        @click.stop="
-                                          sureFilter(
-                                            `filterVisible${index}${index1}${index2}`,
-                                            chatItemInfo
-                                          )
-                                        "
-                                        >确定</el-button
-                                      >
-                                    </div>
                                   </div>
                                 </div>
                               </el-dropdown-menu>
@@ -831,16 +759,12 @@
                       <span style="width: 100%" slot="title">
                         <div style="display: flex; align-items: center">
                           <div class="aiTitleNo">
-                            {{ chatItemInfo.itemType }}
+                            {{ chatItemInfo.stepNo || chatItemInfo.itemType }}
                           </div>
                           &nbsp;&nbsp;
                           <div
-                            class="aiTitleType"
-                            style="
-                              background: rgb(219, 240, 252);
-                              color: rgb(0, 126, 172);
-                              min-width: 46px;
-                            "
+                            class="aiTitleType aiTitleType--compute"
+                            style="min-width: 46px"
                           >
                             计算
                           </div>
@@ -887,16 +811,12 @@
                       <span style="width: 100%" slot="title">
                         <div style="display: flex; align-items: center">
                           <div class="aiTitleNo">
-                            {{ chatItemInfo.itemType }}
+                            {{ chatItemInfo.stepNo || chatItemInfo.itemType }}
                           </div>
                           &nbsp;&nbsp;
                           <div
-                            class="aiTitleType"
-                            style="
-                              background: rgb(216 235 246)
-                              color: rgb(0, 126, 172);
-                                  min-width: 46px;
-                            "
+                            class="aiTitleType aiTitleType--analyze"
+                            style="min-width: 46px"
                           >
                             分析
                           </div>
@@ -922,13 +842,7 @@
                               </div>
                             </span>
                             <div style="padding: 10px">
-                              <div
-                                style="
-                                  background: rgb(239 250 252);
-                                  padding: 10px;
-                                  border-radius: 10px;
-                                "
-                              >
+                              <div class="ai-result-card ai-result-card--analyze">
                                 <markdown-it-vue
                                   :content="record.analysisResult"
                                 ></markdown-it-vue>
@@ -971,20 +885,12 @@
                       <span style="width: 100%" slot="title">
                         <div style="display: flex; align-items: center">
                           <div class="aiTitleNo">
-                            {{ chatItemInfo.itemType }}
+                            {{ chatItemInfo.stepNo || chatItemInfo.itemType }}
                           </div>
                           &nbsp;&nbsp;
                           <div
-                            class="aiTitleType"
-                            style="
-                              color: rgb(4, 120, 87);
-                              background: linear-gradient(
-                                135deg,
-                                #eff6ff,
-                                #f0fdfa
-                              );
-                              min-width: 46px;
-                            "
+                            class="aiTitleType aiTitleType--summary"
+                            style="min-width: 46px"
                           >
                             总结
                           </div>
@@ -995,21 +901,7 @@
 
                       <div>
                         <div style="padding: 10px">
-                          <div
-                            style="
-                              padding: 14px 16px;
-                              background: linear-gradient(
-                                135deg,
-                                #eff6ff,
-                                #f0fdfa
-                              );
-                              border: 1px solid #bae6fd;
-                              border-radius: 10px;
-                              font-size: 14px;
-                              line-height: 1.8;
-                              color: rgb(71, 85, 105);
-                            "
-                          >
+                          <div class="ai-result-card ai-result-card--summary">
                             {{ chatItemInfo.answer }}
                           </div>
                         </div>
@@ -1132,11 +1024,12 @@
           <div style="margin-bottom: 10px">
             <el-button
               :disabled="chatLoading"
-              style="font-size: 14px; padding: 10px; border-radius: 10px"
+              class="send-btn"
               type="primary"
-              icon="el-icon-s-promotion"
               @click="handleEnter"
-            ></el-button>
+            >
+              <base-icon name="send" :size="16" :stroke-width="2" />
+            </el-button>
           </div>
         </div>
       </div>
@@ -1147,37 +1040,18 @@
     <el-dialog
       :show-close="false"
       :close-on-click-modal="false"
-      title="SQL"
+      title="查询 SQL"
       :modal="false"
+      width="640px"
       :visible.sync="isSqlPage"
     >
-      <div class="horizontal-line"></div>
-      <div
-        style="
-          color: white;
-          text-align: left;
-          width: 100%;
-          overflow-y: auto;
-          overflow-x: hidden;
-          max-height: 50vh;
-          padding: 0 10px 0 10px;
-        "
-        class="no-scrollbar"
-      >
-        <div
-          style="padding: 10px; white-space: pre-wrap; background-color: black"
-        >
-          {{ viewSql }}
-        </div>
+      <div style="padding: 0 20px">
+        <sql-panel :sql="viewSql" title="本次查询语句" />
       </div>
 
-      <div class="horizontal-line"></div>
-
-      <div style="margin-top: 10px"></div>
-
-      <div style="display: flex">
+      <div style="display: flex; padding: 14px 20px 16px">
         <div class="one-bgdiv" style="display: flex; justify-content: flex-end">
-          <el-button @click="isSqlPage = false">关闭</el-button>
+          <el-button @click="isSqlPage = false">关 闭</el-button>
         </div>
       </div>
     </el-dialog>
@@ -1196,6 +1070,8 @@ import {
 } from "@/api/metricDataPreview/metricPreviewAPI.js";
 
 import { getUserInfo } from "@/utils/auth";
+import SqlPanel from "@/components/SqlPanel";
+import TruncateTip from "@/components/TruncateTip";
 
 import { sendChat, getChatInfo } from "@/api/smartQuery/smartQueryAPI.js";
 import { connectChatWebSocket } from "@/views/smartQuery/utils/chatWebSocket.js";
@@ -1203,7 +1079,7 @@ import { connectChatWebSocket } from "@/views/smartQuery/utils/chatWebSocket.js"
 export default {
   name: "queryPage",
   props: [],
-  components: {},
+  components: { SqlPanel, TruncateTip },
   data() {
     return {
       dimFilter: [],
@@ -1522,8 +1398,8 @@ export default {
     },
 
     showSQL(viewSql) {
-      //this.viewSql = viewSql
-      this.viewSql = this.formatSQL(viewSql);
+      // SqlPanel 内置 formatSQL 自动格式化(括号深度感知/子查询缩进),直接传原始 SQL
+      this.viewSql = viewSql || "";
       this.isSqlPage = true;
     },
 
@@ -1910,6 +1786,7 @@ export default {
 
       let lastType = "";
       let think = null;
+      let stepNo = 0; // 步骤序号(查数/计算/分析/总结依次编号)
 
       for (let j = 0; j < chatInfo.chatItemInfo.length; j++) {
         groupChatItem.chatId = chatInfo.chatId;
@@ -1926,6 +1803,7 @@ export default {
         } else if (type == "ai") {
           think = chatItemInfo.think;
           obj.itemType = chatItemInfo.itemId;
+          obj.stepNo = ++stepNo;
           if (stepType == "query") {
             obj.stepType = stepType;
 
@@ -2552,6 +2430,118 @@ export default {
   width: 86%;
 }
 
+/* ---------- 欢迎页 ---------- */
+.welcome-hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  gap: 14px;
+  padding: 0 24px;
+}
+
+.welcome-hero__badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  color: #fff;
+  background: var(--accent-gradient, linear-gradient(135deg, #3b82f6, #06b6d4));
+  box-shadow: 0 8px 24px rgba(43, 92, 255, 0.28);
+  margin-bottom: 4px;
+}
+
+.welcome-hero__title {
+  font-size: clamp(22px, 2vw, 30px);
+  font-weight: 600;
+  color: var(--text-primary, #1e293b);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.welcome-hero__agent {
+  background: linear-gradient(135deg, #2b5cff, #06b6d4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+}
+
+.welcome-hero__subtitle {
+  font-size: clamp(13px, 1.1vw, 16px);
+  color: var(--text-muted, #94a3b8);
+}
+
+.welcome-hero__tips {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.welcome-hero__tip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 14px;
+  font-size: 12px;
+  color: var(--text-secondary, #475569);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--border-light, #e5eaf1);
+  border-radius: 999px;
+  box-shadow: 0 1px 3px rgba(30, 41, 59, 0.05);
+}
+
+/* ---------- 思考徽标 / 步骤徽标 / 工具按钮 ---------- */
+.think-badge {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: #fff;
+  background: linear-gradient(135deg, #4f8cff, #2b5cff);
+  box-shadow: 0 2px 6px rgba(43, 92, 255, 0.28);
+  flex-shrink: 0;
+}
+
+.toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 8px;
+
+  .base-icon {
+    vertical-align: middle;
+  }
+}
+
+.send-btn {
+  width: 40px;
+  height: 36px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+  border-radius: 12px;
+  background: var(--accent-gradient, linear-gradient(135deg, #3b82f6, #06b6d4));
+  border: none;
+  box-shadow: 0 4px 12px rgba(43, 92, 255, 0.3);
+  transition: all 0.15s;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(43, 92, 255, 0.4);
+  }
+}
+
 /*.no-scrollbar {
   scrollbar-width: none; 
   -ms-overflow-style: none; 
@@ -2563,28 +2553,24 @@ export default {
 }*/
 
 .aiInput {
-  //border: 1px solid #DCDFE6;
-  border-radius: 14px;
-  transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
-  background: transparent;
-  box-shadow: 0 0 2px #00000005, 0 0 4px #0000000a, 0 0 8px #00000014;
+  border-radius: 16px;
+  transition: box-shadow 0.2s cubic-bezier(0.645, 0.045, 0.355, 1),
+    border-color 0.2s;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--border-light, #e5eaf1);
+  box-shadow: 0 4px 20px rgba(30, 41, 59, 0.07);
+  backdrop-filter: blur(8px);
 
-  //width: 100%;
-  //flex: 1;
   outline: none;
-  border: none;
   resize: none;
   font-family: -apple-system, Segoe UI, Roboto, sans-serif;
-  //padding: 20px 20px 8px;
-  font-size: 16px;
-}
+  font-size: 15px;
 
-.aiInput:focus {
-  /* 移除默认的聚焦轮廓（outline） */
-  outline: none;
-  /* 自定义边框颜色 */
-  box-shadow: 0 0 2px #204ce90f, 0 0 4px #204c9c1a, 0 0 8 #204ce92e;
-  border-color: #204ce9;
+  &:focus-within {
+    border-color: rgba(43, 92, 255, 0.4);
+    box-shadow: 0 4px 20px rgba(43, 92, 255, 0.12),
+      0 0 0 3px rgba(43, 92, 255, 0.08);
+  }
 }
 
 .aiInput-bottom {
@@ -2594,6 +2580,17 @@ export default {
   align-items: center;
   flex-wrap: nowrap;
   overflow: hidden;
+}
+
+.aiInput-textarea ::v-deep .el-textarea__inner,
+.aiInput-textarea.is-disabled ::v-deep .el-textarea__inner,
+.aiInput-textarea ::v-deep .el-textarea__inner:disabled {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--text-primary, #1e293b);
+  -webkit-text-fill-color: var(--text-primary, #1e293b);
+  cursor: text;
 }
 
 .aiInput-textarea ::v-deep .el-textarea__inner {
@@ -2612,27 +2609,80 @@ export default {
   font-size: 16px;
 }
 
+/* 分析/总结结果文字卡片: 多段渐变底 + 内高光, 体现质感 */
+.ai-result-card {
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #3f4a63;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 1px 4px rgba(30, 41, 59, 0.04);
+}
+
+.ai-result-card--analyze {
+  background: linear-gradient(
+    130deg,
+    #f0f7ff 0%,
+    #eef4ff 30%,
+    #f0f0ff 65%,
+    #f6f1ff 100%
+  );
+  border: 1px solid rgba(99, 102, 241, 0.16);
+}
+
+.ai-result-card--summary {
+  background: linear-gradient(
+    130deg,
+    #eff8ff 0%,
+    #ecfbf9 40%,
+    #f0fdf6 75%,
+    #f3fcff 100%
+  );
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.think-content {
+  margin: 8px 10px 10px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: linear-gradient(130deg, #f8fbff 0%, #f5f9ff 55%, #f3fbfe 100%);
+  border: 1px solid rgba(43, 92, 255, 0.08);
+}
+
 .userPanel {
   white-space: normal;
   word-break: break-word;
   text-align: left;
   max-width: 80%;
-  padding: 9px 15px;
-  border-radius: 10px;
-  height: 42px;
+  padding: 10px 16px;
+  min-height: 42px;
+  font-size: 14px;
+  line-height: 1.6;
 
-  background: #e3e7fc;
-  border-radius: 9px 0 8px 9px;
-  color: #53555e;
+  background: linear-gradient(
+    135deg,
+    #e8efff 0%,
+    #e3f0ff 40%,
+    #ddf3ff 75%,
+    #e6f0ff 100%
+  );
+  border: 1px solid rgba(43, 92, 255, 0.16);
+  border-radius: 16px 4px 16px 16px;
+  color: var(--text-primary, #1e293b);
+  box-shadow: 0 2px 8px rgba(43, 92, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 
 .aiPanel {
   text-align: left;
   width: 80%;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.92);
   margin-left: 50px;
-  border: 1px solid rgb(232, 234, 237);
-  border-radius: 10px;
+  border: 1px solid var(--border-light, #e5eaf1);
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(30, 41, 59, 0.05);
+  backdrop-filter: blur(6px);
 }
 
 .el-collapse {
@@ -2651,16 +2701,67 @@ export default {
 }
 
 .aiDisableCollapse ::v-deep .el-collapse-item__header {
-  background: #f6f6f6;
-  padding: 10px 30px;
-  height: 42px;
-  //border: 1px solid rgb(210 210 210);
-  color: rgb(95, 102, 116);
-  //border-radius: 10px;
-  border-top-right-radius: 10px;
-  border-top-left-radius: 10px;
-  border-bottom: 1px solid #ebeef5;
-  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+  padding: 10px 24px;
+  height: 44px;
+  color: #5b5e7a;
+  font-weight: 500;
+  border: 1px solid rgba(43, 92, 255, 0.14);
+  border-radius: 12px;
+  /* 水波纹式光晕: 同色系蓝调渐变自左向右缓慢流动 */
+  background: linear-gradient(
+    100deg,
+    #f0f6ff 0%,
+    #e9f2ff 30%,
+    #e7f6fd 50%,
+    #e9f2ff 70%,
+    #f0f6ff 100%
+  );
+  background-size: 220% 100%;
+  animation: think-wave 5.5s ease-in-out infinite;
+}
+
+/* 高光扫过(水波光晕) */
+.aiDisableCollapse ::v-deep .el-collapse-item__header::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -70%;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 100%
+  );
+  animation: think-shine 4.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes think-wave {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes think-shine {
+  0% {
+    left: -70%;
+  }
+  45% {
+    left: 120%;
+  }
+  100% {
+    left: 120%;
+  }
 }
 .aiDisableCollapse ::v-deep .el-collapse-item__content {
   padding-bottom: 0px;
@@ -2676,16 +2777,20 @@ export default {
 }
 
 .aiThinkCollapse ::v-deep .el-collapse-item__header {
-  background: #f6f6f6;
-  padding: 10px 30px;
-  height: 42px;
-  //border: 1px solid rgb(210 210 210);
-  color: rgb(95, 102, 116);
-  //border-radius: 10px;
-  border-top-right-radius: 10px;
-  border-top-left-radius: 10px;
-  border-bottom: 1px solid #ebeef5;
-  border-radius: 10px;
+  background: linear-gradient(120deg, #f4f8ff 0%, #eef5ff 50%, #f0faff 100%);
+  padding: 10px 24px;
+  height: 44px;
+  color: #4c5670;
+  border: 1px solid rgba(43, 92, 255, 0.12);
+  border-radius: 12px;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.aiThinkCollapse ::v-deep .el-collapse-item__header:hover {
+  border-color: rgba(43, 92, 255, 0.28);
+  box-shadow: 0 4px 14px rgba(43, 92, 255, 0.12);
+  transform: translateY(-1px);
 }
 
 .aiThinkCollapse ::v-deep .el-collapse-item:last-child {
@@ -2702,16 +2807,21 @@ export default {
 }
 
 .aiCollapse ::v-deep .el-collapse-item__header {
-  background: #fafbfe;
-  padding: 10px 30px;
-  height: 42px;
-  //border: 1px solid rgb(232, 234, 237);
-  color: rgb(95, 102, 116);
-  //border-radius: 10px;
-  border-top-right-radius: 10px;
-  border-top-left-radius: 10px;
-  border-bottom: 1px solid #ebeef5;
-  border-radius: 10px;
+  background: linear-gradient(120deg, #f7faff 0%, #f4f8ff 55%, #f2fbfd 100%);
+  padding: 10px 24px;
+  height: 44px;
+  color: #47506b;
+  border: 1px solid rgba(59, 130, 246, 0.13);
+  border-radius: 12px;
+  transition: box-shadow 0.22s ease, border-color 0.22s ease,
+    transform 0.22s ease, background 0.22s ease;
+}
+
+.aiCollapse ::v-deep .el-collapse-item__header:hover {
+  background: linear-gradient(120deg, #f0f6ff 0%, #edf4ff 55%, #e9f9fc 100%);
+  border-color: rgba(59, 130, 246, 0.35);
+  box-shadow: 0 6px 18px rgba(43, 92, 255, 0.13);
+  transform: translateY(-2px);
 }
 
 .aiCollapse ::v-deep .el-collapse-item:last-child {
@@ -2728,16 +2838,20 @@ export default {
 }
 
 .aiAnalysisCollapse ::v-deep .el-collapse-item__header {
-  background: #f1f5ff;
-  padding: 10px 30px;
+  background: linear-gradient(120deg, #f2f6ff 0%, #f1f0fe 60%, #f5f0ff 100%);
+  padding: 10px 24px;
   height: 42px;
-  //border: 1px solid rgb(232, 234, 237);
-  color: rgb(95, 102, 116);
-  //border-radius: 10px;
-  border-top-right-radius: 10px;
-  border-top-left-radius: 10px;
-  border-bottom: 1px solid #ebeef5;
-  border-radius: 10px;
+  color: #4c5470;
+  border: 1px solid rgba(99, 102, 241, 0.13);
+  border-radius: 12px;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.aiAnalysisCollapse ::v-deep .el-collapse-item__header:hover {
+  border-color: rgba(99, 102, 241, 0.32);
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.13);
+  transform: translateY(-1px);
 }
 
 .aiAnalysisCollapse ::v-deep .el-collapse-item:last-child {
@@ -2756,8 +2870,8 @@ export default {
 .aiTitleNo {
   width: 24px;
   height: 24px;
-  border-radius: 50%;
-  background: rgb(59, 130, 246);
+  border-radius: 8px;
+  background: var(--accent-gradient, linear-gradient(135deg, #3b82f6, #06b6d4));
   color: rgb(255, 255, 255);
   font-size: 12px;
   font-weight: 500;
@@ -2765,42 +2879,311 @@ export default {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(43, 92, 255, 0.25);
 }
 
 .aiTitleType {
-  background: rgb(219, 234, 254);
-  color: rgb(29, 78, 216);
-  padding: 2px 3px 2px 3px;
+  background: rgba(59, 130, 246, 0.12);
+  color: #1d4ed8;
   height: 20px;
   display: flex;
   align-content: center;
   padding: 2px 10px;
   flex-wrap: wrap;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  justify-content: center;
+
+  &--compute {
+    background: rgba(6, 182, 212, 0.12);
+    color: #0e7490;
+  }
+
+  &--analyze {
+    background: rgba(139, 92, 246, 0.12);
+    color: #6d28d9;
+  }
+
+  &--summary {
+    background: rgba(16, 185, 129, 0.12);
+    color: #047857;
+  }
 }
 
 .queryDimPanel {
   display: flex;
   align-items: center;
   gap: 5px;
-  background: #e0f2fe;
-  border-color: #7dd3fc;
+  background: linear-gradient(135deg, #e3f1fe, #dbf3fd);
+  border: 1px solid rgba(59, 130, 246, 0.16);
   color: #0369a1;
-  padding: 0 10px;
-  border-radius: 4px;
+  padding: 0 14px;
+  border-radius: 999px;
   height: 30px;
   margin-right: 5px;
+  transition: box-shadow 0.18s ease, transform 0.18s ease,
+    border-color 0.18s ease;
 }
 
-.queryfilterName {
-  width: 100px;
-  border: 1px solid #e0e0e6;
+.queryDimPanel:hover {
+  border-color: rgba(59, 130, 246, 0.38);
+  box-shadow: 0 3px 10px rgba(59, 130, 246, 0.16);
+  transform: translateY(-1px);
+}
 
-  line-height: 24px;
-  border-radius: 3px;
-  background: #fafafc;
-  text-align: center;
-  padding: 2px 0px 2px 0px;
+/* 标签文本：超长单行省略；仅当确实被截断时才显示 Tooltip（TruncateTip 组件控制） */
+.queryDimPanel__text {
+  max-width: 7em; /* 约 7 个汉字，超出即省略 */
+  cursor: default;
+}
+
+/* ---------- 行级布局（维度/指标/筛选器公用，尺寸自适应） ---------- */
+.query-row--filter {
+  padding: 10px 20px;
+  background: #fafbfe;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.query-row__main {
+  display: flex;
+  align-items: flex-start;
+  flex: 1 1 auto;
+  min-width: 0; /* 允许内部收缩，防止撑破 */
+}
+
+.query-row__label {
+  flex: 0 0 60px;
+  width: 60px;
+  line-height: 30px;
+  color: #303a4e;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.query-row__tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 2px 0;
+}
+
+/* ---------- 筛选条件区：响应式胶囊卡片 ---------- */
+.filter-area {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.filter-conds {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+}
+
+/* 单个条件：圆角胶囊，内部元素无缝拼接 */
+.filter-cond {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid #dde3ee;
+  border-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.filter-cond:hover {
+  border-color: rgba(43, 92, 255, 0.4);
+  box-shadow: 0 2px 8px rgba(43, 92, 255, 0.08);
+}
+
+.filter-cond:focus-within {
+  border-color: #2b5cff;
+  box-shadow: 0 0 0 2px rgba(43, 92, 255, 0.12);
+}
+
+/* 条件名（字段名）：固定宽度，超长省略，保证每个筛选器长度一致 */
+.filter-cond__name {
+  display: block;
+  box-sizing: border-box;
+  width: 108px;
+  padding: 0 10px;
   height: 30px;
+  line-height: 30px;
+  background: #f2f5fb;
+  color: #303a4e;
+  font-weight: 500;
+  border-right: 1px solid #e6eaf3;
+  flex: 0 0 auto;
+}
+
+.filter-cond__field {
+  width: 88px;
+  flex: 0 0 auto;
+}
+
+.filter-cond__op {
+  width: 84px;
+  flex: 0 0 auto;
+}
+
+/* 88 + 240 = 328，与动态条件胶囊总长一致 */
+.filter-cond__date {
+  width: 240px;
+  flex: 0 0 auto;
+}
+
+/* 值区域：固定宽度，所有条件胶囊总长一致（108+84+110+26） */
+.filter-cond__value {
+  width: 110px;
+  flex: 0 0 auto;
+}
+
+/* 胶囊内部控件去边框，由外层胶囊统一描边 */
+.filter-cond ::v-deep .el-input__inner,
+.filter-cond ::v-deep .el-range-editor.el-input__inner {
+  border: none !important;
+  border-radius: 0 !important;
+  height: 30px;
+  line-height: 30px;
+  background: #fff !important;
+}
+
+.filter-cond ::v-deep .selectStyle .el-input__inner {
+  background: #f7f9fd !important;
+  border-right: 1px solid #e6eaf3 !important;
+  text-align: center;
+}
+
+.filter-cond ::v-deep .el-date-editor .el-range-input {
+  background: transparent;
+}
+
+/* 多选值：输入框高度锁定 30px，不随标签数量变高 */
+.filter-cond__value--select ::v-deep .el-input__inner {
+  height: 30px !important;
+}
+
+/* 多选值：标签强制单行不换行，避免值多时撑破胶囊 */
+.filter-cond ::v-deep .el-select__tags {
+  max-width: calc(100% - 24px) !important;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  height: 28px;
+}
+
+.filter-cond ::v-deep .el-select__tags > span {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.filter-cond__value--select ::v-deep .el-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  line-height: 18px;
+  margin: 0 0 0 4px;
+  padding: 0 4px;
+  flex: 0 0 auto;
+  max-width: 58px;
+  background: #eef3ff;
+  border-color: #dbe4ff;
+  color: #2b5cff;
+}
+
+.filter-cond__value--select ::v-deep .el-tag .el-select__tags-text {
+  display: inline-block;
+  max-width: 36px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.filter-cond__value--select ::v-deep .el-tag .el-tag__close {
+  flex: 0 0 auto;
+  margin-left: 2px;
+  transform: scale(0.8);
+  background: transparent;
+  color: #7c8db5;
+}
+
+.filter-cond__value--select ::v-deep .el-tag .el-tag__close:hover {
+  background: #2b5cff;
+  color: #fff;
+}
+
+/* 日期区间：分隔符"至"垂直水平居中、两侧输入均分宽度 */
+.filter-cond__date ::v-deep .el-range-separator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 30px;
+  height: 30px;
+  padding: 0;
+  width: 10%;
+  font-size: 12px;
+  color: #98a2b8;
+}
+
+.filter-cond__date ::v-deep .el-range-input {
+  width: 42%;
+  font-size: 13px;
+}
+
+.filter-cond__date ::v-deep .el-range__icon {
+  line-height: 30px;
+  margin-left: 2px;
+}
+
+.filter-cond__date ::v-deep .el-range__close-icon {
+  line-height: 30px;
+  width: 16px;
+}
+
+/* 删除按钮：悬停变红，替代原三角形 × hack */
+.filter-cond__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  border: none;
+  border-left: 1px solid #e6eaf3;
+  background: #f7f9fd;
+  color: #98a2b8;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.filter-cond__remove:hover {
+  background: #fef0f0;
+  color: #f56c6c;
+}
+
+.filter-area__actions {
+  display: flex;
+}
+
+.filter-area__search {
+  height: 30px;
+  padding: 0 20px;
+}
+
+/* 窄屏：条件胶囊内部允许换行 */
+@media (max-width: 768px) {
+  .filter-cond {
+    flex-wrap: wrap;
+  }
 }
 
 .query-tableBox {
@@ -3010,6 +3393,115 @@ export default {
 
 .filterPanel ::v-deep .el-checkbox__label {
   font-size: 12px;
+}
+
+/* ===== 添加筛选器卡片 ===== */
+.filter-pop-menu {
+  padding: 0 !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(43, 92, 255, 0.1) !important;
+  box-shadow: 0 12px 32px rgba(30, 60, 120, 0.14) !important;
+  overflow: hidden;
+}
+
+.filter-pop {
+  width: 264px;
+}
+
+.filter-pop__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2c3550;
+  background: linear-gradient(120deg, #f4f8ff 0%, #f0f7ff 60%, #f2fbfe 100%);
+  border-bottom: 1px solid rgba(43, 92, 255, 0.08);
+}
+
+.filter-pop__icon {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  color: #fff;
+  background: linear-gradient(135deg, #4f8cff, #2b5cff);
+  box-shadow: 0 2px 5px rgba(43, 92, 255, 0.25);
+  flex-shrink: 0;
+}
+
+.filter-pop__body {
+  padding: 4px 8px 0;
+}
+
+.filter-pop__body ::v-deep .el-tabs__header {
+  margin-bottom: 6px;
+}
+
+.filter-pop__body ::v-deep .el-tabs__item {
+  font-size: 12.5px;
+  height: 36px;
+  line-height: 36px;
+  color: #66758a;
+  transition: color 0.2s ease;
+}
+
+.filter-pop__body ::v-deep .el-tabs__item.is-active {
+  color: var(--brand, #2b5cff);
+  font-weight: 600;
+}
+
+.filter-pop__body ::v-deep .el-tabs__active-bar {
+  background: linear-gradient(90deg, #3b82f6, #2b5cff);
+  height: 3px;
+  border-radius: 3px;
+}
+
+.filter-pop__body ::v-deep .el-tabs__nav-wrap::after {
+  height: 1px;
+  background-color: rgba(43, 92, 255, 0.08);
+}
+
+.filter-pop__list {
+  width: 100%;
+  max-height: 180px;
+  overflow-y: auto;
+  padding: 2px 8px 6px;
+}
+
+.filter-pop__list .filterPanel {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 0 0 2px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+}
+
+.filter-pop__list .filterPanel:hover {
+  background: rgba(43, 92, 255, 0.05);
+}
+
+.filter-pop__list .filterPanel ::v-deep .el-checkbox__label {
+  font-size: 12.5px;
+  color: #3c465e;
+}
+
+.filter-pop__footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 14px 12px;
+  border-top: 1px solid rgba(43, 92, 255, 0.08);
+  background: #fbfcff;
+}
+
+.filter-pop__footer .el-button--mini {
+  padding: 6px 18px;
+  border-radius: 8px;
 }
 
 .el-popper {

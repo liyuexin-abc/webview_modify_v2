@@ -1,181 +1,122 @@
 <template>
-  <div>
-    <div style="display: flex; flex-direction: column;">
-      <div class="horizontal-line"></div>
+  <div class="ds-form-wrap">
+    <div class="ds-form__section-title">基本信息 · 连接配置</div>
 
-      <div style="display: flex">
-        <div class="title16-one-padding-bgdiv">
-          基本信息 - 连接配置
-          <div class="horizontal-line"></div>
-        </div>
-      </div>
-
-      <div style="display: flex;">
-        <div class="two-front-bgdiv">数据源名称<span style="color: red">*</span></div>
-
-        <div class="two-back-bgdiv">数据库类型<span style="color: red">*</span></div>
-      </div>
-
-      <div style="display: flex;">
-        <div class="two-front-bgdiv">
-          <el-input
-            v-model="dataSource.name"
-            placeholder="给数据源起个业务可辨识得名字"
-          ></el-input>
-        </div>
-
-        <div class="two-back-bgdiv">
-          <el-select
-            v-model="dataSource.dbType"
-            placeholder="数据库类型"
-            @change="selectDatabaseType"
-            style="width: 100%;"
-          >
-            <el-option
-              v-for="item in databaseTypeList"
-              :key="item.name"
-              :label="item.name"
-              :value="item.name"
+    <el-form label-position="top" size="small" class="ds-form">
+      <el-row :gutter="16">
+        <el-col :span="12">
+          <el-form-item label="数据源名称" required>
+            <el-input
+              v-model="dataSource.name"
+              placeholder="给数据源起个业务可辨识的名字"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="数据库类型" required>
+            <el-select
+              v-model="dataSource.dbType"
+              placeholder="数据库类型"
+              @change="selectDatabaseType"
+              style="width: 100%"
             >
-            </el-option>
-          </el-select>
+              <el-option
+                v-for="item in databaseTypeList"
+                :key="item.name"
+                :label="item.name"
+                :value="item.name"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="16">
+        <el-col :span="12">
+          <el-form-item label="主机地址/IP" required>
+            <el-input
+              v-model="dataSource.host"
+              placeholder="如10.0.1.100"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="端口" required>
+            <el-input v-model="dataSource.port" placeholder="3306"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="16">
+        <el-col :span="12">
+          <el-form-item label="数据库/Database" required>
+            <el-input
+              v-model="dataSource.defaultDb"
+              placeholder="MySql 的 database, 如 clinic_ops"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="Schema(选填)">
+            <el-input
+              v-model="dataSource.schemaName"
+              placeholder="PG/GaussDB选填"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="16">
+        <el-col :span="12">
+          <el-form-item label="用户名" required>
+            <el-input
+              v-model="dataSource.username"
+              placeholder="输入用户名"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item required>
+            <template slot="label"
+              >密码
+              <span class="ds-form__hint" v-if="dataSourceItem != null"
+                >(不修改时不输入)</span
+              ></template
+            >
+            <el-input
+              v-model="dataSource.password"
+              placeholder="输入密码"
+              show-password
+              autocomplete="new-password"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-form-item label="JDBC URL(自动生成,仅供确认)">
+        <div class="ds-form__jdbc">{{ JDBCSplice }}&nbsp;</div>
+      </el-form-item>
+
+      <el-form-item v-if="JDBCTestText != ''">
+        <div class="ds-form__test-ok">
+          <base-icon name="check-circle" :size="14" /> {{ JDBCTestText }}
         </div>
-      </div>
-
-      <div style="display: flex">
-        <div class="two-front-bgdiv">主机地址/IP<span style="color: red">*</span></div>
-
-        <div class="two-back-bgdiv">端口<span style="color: red">*</span></div>
-      </div>
-
-      <div style="display: flex">
-        <div class="two-front-bgdiv">
-          <el-input
-            v-model="dataSource.host"
-            placeholder="如10.0.1.100"
-          ></el-input>
-        </div>
-
-        <div class="two-back-bgdiv">
-          <el-input v-model="dataSource.port" placeholder="3306"></el-input>
-        </div>
-      </div>
-
-      <div style="display: flex;">
-        <div class="two-front-bgdiv">
-          数据库/Database
-          <span style="color: red">*</span>
-        </div>
-
-        <div class="two-back-bgdiv">Schema(选填)</div>
-      </div>
-
-      <div style="display: flex;">
-        <div class="two-front-bgdiv">
-          <el-input
-            v-model="dataSource.defaultDb"
-            placeholder="MySql 的 database, 如 clinic_ops"
-          ></el-input>
-        </div>
-
-        <div class="two-back-bgdiv">
-          <el-input
-            v-model="dataSource.schemaName"
-            placeholder="PG/GaussDB选填"
-          ></el-input>
-        </div>
-      </div>
-
-      <div style="display: flex;">
-        <div class="two-front-bgdiv">用户名<span style="color: red">*</span></div>
-
-        <div class="two-back-bgdiv" style="display: flex;">
-          密码<span style="color: red">*</span>
-          <div style="color: silver" v-if="dataSourceItem != null">
-            &nbsp;&nbsp;(不修改时不输入)
-          </div>
-        </div>
-      </div>
-
-      <div style="display: flex;">
-        <div class="two-front-bgdiv">
-          <el-input
-            v-model="dataSource.username"
-            placeholder="输入用户名"
-          ></el-input>
-        </div>
-
-        <div class="two-back-bgdiv">
-          <el-input
-            v-model="dataSource.password"
-            placeholder="输入密码"
-            show-password
-            autocomplete="new-password"
-          ></el-input>
-        </div>
-      </div>
-
-      <div style="display: flex;">
-        <div class="one-bgdiv">JDBC URL （自动生成，仅供确认）</div>
-      </div>
-
-      <div style="display: flex;">
-        <div class="one-bgdiv">
-          <!--<el-input
-          v-model="JDBCSplice"
-          readonly
-          disabled
-          placeholder=""
-        ></el-input>-->
-          <div
-            style="
-              background-color: #f6f6f3;
-              border-radius: 5px;
-              padding: 6px 12px;
-              border: solid 1px silver;
-            "
-          >
-            {{ JDBCSplice }} &nbsp;
-          </div>
-        </div>
-      </div>
-
-      <div style="display: flex;" v-if="JDBCTestText != ''">
-        <div class="one-bgdiv">
-          <div
-            style="
-              background-color: rgb(222 252 230);
-              border-radius: 5px;
-                  padding: 6px 12px;
-              border: solid 1px silver;
-            "
-          >
-            {{ JDBCTestText }}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    
+      </el-form-item>
+    </el-form>
 
     <div class="horizontal-line"></div>
 
-    <div style="display: flex;padding-bottom: 5px;">
-      <div
-        class="one-bgdiv"
-        style="display: flex; justify-content: space-between;"
+    <div class="ds-form__footer">
+      <el-button @click="testDataSource()"
+        ><base-icon name="zap" :size="14" />&nbsp;测试连接</el-button
       >
-        <div>
-          <el-button @click="testDataSource()">测试连接</el-button>
-        </div>
-        <div>
-          <el-button @click="close()">取消</el-button>
-          <el-button type="primary" @click="newDataSource()">
-            <div v-if="dataSourceItem == null">创建</div>
-            <div v-else>更新</div>
-          </el-button>
-        </div>
-      </div>
+      <div style="flex: 1"></div>
+      <el-button @click="close()">取消</el-button>
+      <el-button type="primary" @click="newDataSource()">
+        <div v-if="dataSourceItem == null">创建</div>
+        <div v-else>更新</div>
+      </el-button>
     </div>
   </div>
 </template>
@@ -220,20 +161,11 @@ export default {
 
   computed: {
     JDBCSplice: function () {
-      if (
-        this.dataSource.hasOwnProperty("host") &&
-        this.dataSource.hasOwnProperty("port") &&
-        this.dataSource.hasOwnProperty("defaultDb") &&
-        (this.dataSource.host !='' || this.dataSource.port!='' || this.dataSource.defaultDb != '')
-      ) {
-        return (
-          this.JDBCPrefix +
-          this.dataSource.host +
-          ":" +
-          this.dataSource.port +
-          "/" +
-          this.dataSource.defaultDb
-        );
+      var host = this.dataSource.host || "";
+      var port = this.dataSource.port || "";
+      var defaultDb = this.dataSource.defaultDb || "";
+      if (host !== "" || port !== "" || defaultDb !== "") {
+        return this.JDBCPrefix + host + ":" + port + "/" + defaultDb;
       } else {
         return this.JDBCPrefix;
       }
@@ -509,5 +441,75 @@ export default {
 </script>
 
  <style scoped lang="scss">
+.ds-form-wrap {
+  padding: 4px 28px 6px;
+}
 
+.ds-form__section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+
+  &::before {
+    content: "";
+    width: 4px;
+    height: 14px;
+    border-radius: 2px;
+    background: var(--accent-gradient, linear-gradient(180deg, #3b82f6, #06b6d4));
+  }
+}
+
+.ds-form {
+  ::v-deep .el-form-item__label {
+    padding-bottom: 6px;
+    font-weight: 600;
+    color: #334155;
+  }
+  ::v-deep .el-form-item {
+    margin-bottom: 22px;
+  }
+}
+
+.ds-form__hint {
+  font-weight: 400;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.ds-form__jdbc {
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color, #e5eaf1);
+  background: #f8fafc;
+  font-family: var(--font-mono, Consolas, Menlo, monospace);
+  font-size: 12.5px;
+  color: #475569;
+  word-break: break-all;
+  line-height: 1.6;
+}
+
+.ds-form__test-ok {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #15803d;
+  font-size: 12.5px;
+}
+
+.ds-form__footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 0 14px;
+  margin-top: 10px;
+  border-top: 1px solid var(--border-color, #e5eaf1);
+}
 </style>

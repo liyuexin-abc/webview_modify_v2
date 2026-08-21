@@ -180,8 +180,8 @@
                   >
                 </div>
                 <div style="margin-left: 10px">
-                  <el-button icon="el-icon-refresh" @click="reset()"
-                    >重置</el-button
+                  <el-button @click="reset()"
+                    ><base-icon name="refresh" :size="14" />&nbsp;重置</el-button
                   >
                 </div>
               </div>
@@ -209,7 +209,7 @@
                   style="margin-left: 10px"
                   @click="isSqlPage = true"
                   :disabled="metricPreviewData.sql == ''"
-                  >SQL</el-button
+                  ><base-icon name="file-code" :size="14" />&nbsp;SQL</el-button
                 >
               </div>
 
@@ -218,7 +218,7 @@
                   style="margin-left: 10px"
                   @click="downFile"
                   :disabled="metricPreviewData.sql == ''"
-                  >下载</el-button
+                  ><base-icon name="download" :size="14" />&nbsp;下载</el-button
                 >
               </div>
 
@@ -351,32 +351,17 @@
       :show-close="false"
       :close-on-click-modal="false"
       top="10vh"
-      title="SQL"
+      title="查询 SQL"
+      width="640px"
       :modal="false"
       :visible.sync="isSqlPage"
     >
-      <div class="horizontal-line"></div>
-
-      <div
-        style="
-          color: white;
-          text-align: left;
-          width: 100%;
-          overflow-y: auto;
-          overflow-x: hidden;
-          max-height: 50vh;
-          padding: 0 10px 0 10px;
-        "
-        class="no-scrollbar"
-      >
-        <div
-          style="padding: 10px; white-space: pre-wrap; background-color: black"
-        >
-          {{ formatSQL(metricPreviewData.sql) }}
-        </div>
+      <div style="max-height: 56vh; overflow-y: auto" class="no-scrollbar">
+        <sql-panel
+          :sql="metricPreviewData.sql && metricPreviewData.sql.indexOf('\n') >= 0 ? metricPreviewData.sql : formatSQL(metricPreviewData.sql || '')"
+          title="本次查询语句"
+        />
       </div>
-
-      <div class="horizontal-line"></div>
 
       <div style="margin-top: 10px"></div>
 
@@ -393,6 +378,7 @@
 
 
 <script>
+import SqlPanel from "@/components/SqlPanel";
 import {
   getMetricsTreeAPI,
   getMetricsDataPreviewAPI,
@@ -405,7 +391,7 @@ import sortPage from "@/views/metricDataPreview/sortPage";
 
 export default {
   name: "metricDataPreview",
-  components: {
+  components: { SqlPanel, 
     topNPage,
     filterPage,
     sortPage,

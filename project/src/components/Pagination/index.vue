@@ -1,30 +1,22 @@
 <template>
   <div :class="{'hidden':hidden}" class="pagination-container">
-
-<div style="display: flex;justify-content: space-between;align-items: center;">
-  <div style="font-size:14px;"> 
-  共{{ total }}条数据
-</div> 
-
-<div>
-    <el-pagination
-      :background="background"
-      :current-page.sync="currentPage"
-      :page-size.sync="pageSize"
-      :layout="layout"
-      :page-sizes="pageSizes"
-      :pager-count="pagerCount"
-      :total="total"
-      v-bind="$attrs"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :style="{ fontSize: '34px' }"
-    />
-
-</div>
-
-  </div>
+    <div class="pagination-container__inner">
+      <div class="pagination-container__total">共{{ total }}条数据</div>
+      <el-pagination
+        class="pagination-container__pager"
+        :background="background"
+        :current-page.sync="currentPage"
+        :page-size.sync="pageSize"
+        :layout="layout"
+        :page-sizes="pageSizes"
+        :pager-count="pagerCount"
+        :total="total"
+        v-bind="$attrs"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
     </div>
+  </div>
 </template>
 
 <script>
@@ -114,16 +106,34 @@ export default {
 .pagination-container {
   background: #fff;
   padding: 8px 16px;
-
 }
 .pagination-container.hidden {
   display: none;
 }
 
-.el-pagination {
-align-items: center;
-    display: flex;
-        flex-wrap: wrap;
+.pagination-container__inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* 总数文本：永不换行、不被挤压 */
+.pagination-container__total {
+  font-size: 14px;
+  color: #5a6880;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* 分页器：单行展示，空间不足时整体换到下一行而不是内部折行 */
+.pagination-container__pager.el-pagination {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  margin-left: auto;
 }
 
 

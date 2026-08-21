@@ -4,3 +4,4 @@ dist/
 easeui-study/*.png
 supervisord.pid
 supervisor.sock
+*.tar.gz

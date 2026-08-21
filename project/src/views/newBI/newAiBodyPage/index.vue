@@ -1,175 +1,239 @@
 <template>
-  <div style="width: 100%" class="my-custom-style">
-    <div style="width: 100%">
-      <el-tabs stretch v-model="activeName">
-        <el-tab-pane label="数据表" name="first">
-          <div style="display: flex; justify-content: space-between">
-            <div style="width: 50%">
-              <div style="display: flex">
-                <div class="two-front-bgdiv">
-                  智能体名称<span style="color: red">*</span>
-                </div>
-                <div class="two-back-bgdiv">描述</div>
-              </div>
+  <div class="my-custom-style agent-config">
+    <el-form label-position="top" size="small" class="agent-config__form">
+      <el-row :gutter="16">
+        <el-col :span="12">
+          <el-form-item label="智能体名称" required>
+            <el-input
+              v-model="agentDetail.name"
+              placeholder="如:销售分析智能体"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="描述">
+            <el-input
+              v-model="agentDetail.description"
+              placeholder="简要描述该智能体的用途"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
 
-              <div style="display: flex">
-                <div class="two-front-bgdiv">
-                  <el-input
-                    v-model="agentDetail.name"
-                    placeholder=""
-                  ></el-input>
-                </div>
-                <div class="two-back-bgdiv">
-                  <el-input
-                    v-model="agentDetail.description"
-                    placeholder=""
-                  ></el-input>
-                </div>
-              </div>
+    <el-tabs v-model="activeName" class="agent-config__tabs">
+      <el-tab-pane name="first">
+        <span slot="label" class="agent-config__tab-label">
+          <base-icon name="table" :size="14" /> 数据表
+        </span>
 
-              <div>
-                <div class="one-bgdiv">数据源</div>
-              </div>
-
-              <div style="width: 100%; display: flex">
-                <div class="two-front-bgdiv">
-                  <el-select
-                    placeholder="选择数据源"
-                    v-model="queryParams.sourceId"
-                    @change="getAiBodyCandidateTables"
-                    style="width: 100%"
-                  >
-                    <el-option
-                      v-for="item in dataSourceList"
-                      :key="item.id"
-                      :label="`${item.name}(${item.dbType})`"
-                      :value="item.id"
-                    >
-                    </el-option
-                  ></el-select>
-                </div>
-                <div class="two-back-bgdiv">
-                  <el-input
-                    v-model="queryParams.keyword"
-                    placeholder="搜索表名..."
-                    @keyup.enter.native="getAiBodyCandidateTables"
-                  ></el-input>
-                </div>
-              </div>
-
-              <div
-                style="
-                  width: 100%;
-                  max-height: 40vh;
-                  overflow-y: auto;
-                  overflow-x: hidden;
-                "
-                class="no-scrollbar"
+        <div class="agent-config__panes">
+          <!-- 左:候选表 -->
+          <div class="agent-config__pane">
+            <div class="agent-config__pane-title">选择数据表</div>
+            <div class="agent-config__toolbar">
+              <el-select
+                placeholder="选择数据源"
+                v-model="queryParams.sourceId"
+                @change="getAiBodyCandidateTables"
+                size="small"
+                style="width: 46%"
               >
-                <div class="one-bgdiv">
-    
-                    <div class="drag-table">
-                    <el-table
-                      ref="multipleTable"
-                      :data="candidateTables"
-                      style="width: 100%"
-                      border
-                      @selection-change="handleSelectionChange"
-                      stripe
-                    >
-                      <el-table-column label="序号" type="selection" width="55">
-                      </el-table-column>
-
-                      <el-table-column
-                        label="表名"
-                        prop="tableName"
-                        width="auto"
-                        min-width="13%"
-                        resizable
-                        sortable
-                        show-overflow-tooltip
-                        :render-header="renderHeader"
-                      />
-
-                      <el-table-column
-                        label="注释"
-                        prop="tableComment"
-                        width="auto"
-                        min-width="13%"
-                        resizable
-                        sortable
-                        show-overflow-tooltip
-                        :render-header="renderHeader"
-                      />
-                    </el-table>
-                    </div>
-           
-                </div>
-              </div>
+                <el-option
+                  v-for="item in dataSourceList"
+                  :key="item.id"
+                  :label="`${item.name}(${item.dbType})`"
+                  :value="item.id"
+                >
+                </el-option>
+              </el-select>
+              <el-input
+                v-model="queryParams.keyword"
+                placeholder="搜索表名..."
+                size="small"
+                style="flex: 1"
+                @keyup.enter.native="getAiBodyCandidateTables"
+              >
+                <base-icon slot="suffix" name="search" :size="14" style="margin: 8px 6px 0 0; color: #94a3b8" />
+              </el-input>
             </div>
 
-            <div
-              style="
-                width: 50%;
-                max-height: 55vh;
-                overflow-y: auto;
-                overflow-x: hidden;
-              "
-              class="no-scrollbar"
-            >
-              <div class="one-bgdiv">
+            <div class="agent-config__table-wrap no-scrollbar">
+              <div class="drag-table">
+                <el-table
+                  ref="multipleTable"
+                  :data="candidateTables"
+                  style="width: 100%"
+                  border
+                  @selection-change="handleSelectionChange"
+                  stripe
+                >
+                  <el-table-column label="序号" type="selection" width="55">
+                  </el-table-column>
 
-                  <div class="drag-table">
-                  <el-table
-                    :data="tableRelations"
-                    style="width: 100%"
-                    border
-                    stripe
-                    class="expand-table"
-                  >
-                    <el-table-column type="expand" width="20px">
-                      <template slot-scope="props">
-                        <el-table
-                          :data="props.row.relations"
-                          style="width: 100%"
-                          :row-style="{ backgroundColor: '#F5F7FA' }"
-                          border
+                  <el-table-column
+                    label="表名"
+                    prop="tableName"
+                    width="auto"
+                    min-width="13%"
+                    resizable
+                    sortable
+                    show-overflow-tooltip
+                    :render-header="renderHeader"
+                  />
+
+                  <el-table-column
+                    label="注释"
+                    prop="tableComment"
+                    width="auto"
+                    min-width="13%"
+                    resizable
+                    sortable
+                    show-overflow-tooltip
+                    :render-header="renderHeader"
+                  />
+                </el-table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 右:已选关系 -->
+          <div class="agent-config__pane">
+            <div class="agent-config__pane-title">已选数据表(按数据源分组)</div>
+            <div class="agent-config__table-wrap agent-config__table-wrap--tall no-scrollbar">
+              <div class="drag-table">
+                <el-table
+                  :data="tableRelations"
+                  style="width: 100%"
+                  border
+                  stripe
+                  class="expand-table"
+                >
+                  <el-table-column type="expand" width="20px">
+                    <template slot-scope="props">
+                      <el-table
+                        :data="props.row.relations"
+                        style="width: 100%"
+                        :row-style="{ backgroundColor: '#F5F7FA' }"
+                        border
+                      >
+                        <el-table-column
+                          label="表名"
+                          prop="tableName"
+                          width="auto"
+                          min-width="40%"
+                          resizable
+                          sortable
+                          show-overflow-tooltip
+                          :render-header="renderHeader"
+                        />
+
+                        <el-table-column
+                          label="注释"
+                          prop="tableComment"
+                          width="auto"
+                          min-width="40%"
+                          resizable
+                          sortable
+                          show-overflow-tooltip
+                          :render-header="renderHeader"
+                        />
+                        <el-table-column
+                          label="操作"
+                          align="center"
+                          width="auto"
+                          min-width="20%"
                         >
-                          <el-table-column
-                            label="表名"
-                            prop="tableName"
-                            width="auto"
-                            min-width="40%"
-                            resizable
-                            sortable
-                            show-overflow-tooltip
-                            :render-header="renderHeader"
-                          />
+                          <template slot-scope="scope">
+                            <el-button
+                              type="text"
+                              class="op-icon-btn is-danger"
+                              @click="deleteMetric(scope.row)"
+                              ><base-icon name="trash" :size="14"
+                            /></el-button>
+                          </template>
+                        </el-table-column>
+                      </el-table>
+                    </template>
+                  </el-table-column>
 
-                          <el-table-column
-                            label="注释"
-                            prop="tableComment"
-                            width="auto"
-                            min-width="40%"
-                            resizable
-                            sortable
-                            show-overflow-tooltip
-                            :render-header="renderHeader"
-                          />
-                          <el-table-column
-                            label="操作"
-                            align="center"
-                            width="auto"
-                            min-width="20%"
-                          >
-                            <template slot-scope="scope">
-                              <el-button
-                                type="text"
-                                style="color: red"
-                                @click="deleteMetric(scope.row)"
-                                >删除</el-button
-                              >
-                            </template>
+                  <el-table-column
+                    label="表名"
+                    prop="name"
+                    width="auto"
+                    min-width="40%"
+                    resizable
+                    sortable
+                    show-overflow-tooltip
+                    :render-header="renderHeader"
+                  />
+
+                  <el-table-column
+                    label="数量"
+                    prop=""
+                    width="auto"
+                    min-width="30%"
+                    resizable
+                    show-overflow-tooltip
+                    sortable
+                    :sort-method="
+                      (a, b) => a.relations.length - b.relations.length
+                    "
+                    :render-header="renderHeader"
+                  >
+                    <template slot-scope="scope">
+                      {{ scope.row.relations.length }}
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </el-tab-pane>
+
+      <el-tab-pane name="second">
+        <span slot="label" class="agent-config__tab-label">
+          <base-icon name="book" :size="14" /> 行业知识
+        </span>
+
+        <div class="agent-config__knowledge no-scrollbar">
+          <div
+            class="agent-config__knowledge-row"
+            v-for="(knowledge, index) in agentDetail.knowledgeList"
+            :key="index"
+          >
+            <span class="agent-config__knowledge-no">{{ index + 1 }}</span>
+            <el-input
+              v-model="knowledge.knowledgeElement"
+              placeholder="知识内容(标准术语)"
+              size="small"
+            ></el-input>
+            <el-button
+              type="text"
+              class="op-icon-btn is-danger"
+              @click="deleteKnowledge(index)"
+              ><base-icon name="trash" :size="14"
+            /></el-button>
+          </div>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
+
+    <div class="horizontal-line"></div>
+
+    <div class="agent-config__footer">
+      <div v-show="activeName == 'second'">
+        <el-button size="small" @click="newKnowledge()">
+          <base-icon name="plus" :size="13" />&nbsp;添加</el-button
+        >
+      </div>
+      <div style="flex: 1"></div>
+      <el-button @click="close()"> 取消 </el-button>
+      <el-button type="primary" @click="newAIBody()"> 确定 </el-button>
+    </div>
+  </div>
+</template>
                           </el-table-column>
                         </el-table>
                       </template>
@@ -444,6 +508,36 @@ export default {
       this.agentDetail.knowledgeList.splice(index, 1);
     },
 
+    //从已选关系中删除某张表(原代码引用但未实现,补齐避免运行时报错)
+    deleteMetric(row) {
+      for (let i = 0; i < this.tableRelations.length; i++) {
+        const relations = this.tableRelations[i].relations;
+        const idx = relations.findIndex(
+          (item) =>
+            item.relationId == row.relationId && item.sourceId == row.sourceId
+        );
+        if (idx > -1) {
+          relations.splice(idx, 1);
+          if (relations.length == 0) {
+            this.tableRelations.splice(i, 1);
+          }
+          break;
+        }
+      }
+      //同步左侧勾选状态
+      if (row.sourceId == this.queryParams.sourceId && this.$refs.multipleTable) {
+        const cIdx = this.candidateTables.findIndex(
+          (item) => item.relationId == row.relationId
+        );
+        if (cIdx > -1) {
+          this.$refs.multipleTable.toggleRowSelection(
+            this.candidateTables[cIdx],
+            false
+          );
+        }
+      }
+    },
+
     async getDataSourceList() {
       //查询数据源的参数
       //const loading = this.loadingScreen();
@@ -665,98 +759,120 @@ export default {
 </script>
 
 <style scoped lang="scss">
-/*.two-front-bgdiv {
-  width: 50%;
-  text-align: left;
-  padding: 0px 10px 10px 30px;
+.agent-config {
+  width: 100%;
+  padding: 4px 28px 20px;
+  box-sizing: border-box;
 }
 
-.two-back-bgdiv {
-  width: 50%;
-  text-align: left;
-  padding: 0px 30px 10px 10px;
+.agent-config__form {
+  ::v-deep .el-form-item__label {
+    padding-bottom: 6px;
+    font-weight: 600;
+    color: #334155;
+  }
+  ::v-deep .el-form-item {
+    margin-bottom: 20px;
+  }
+}
+
+.agent-config__tabs {
+  ::v-deep .el-tabs__header {
+    margin-bottom: 18px;
+  }
+}
+
+.agent-config__tab-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.agent-config__panes {
+  display: flex;
+  gap: 20px;
+}
+
+.agent-config__pane {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--border-color, #e5eaf1);
+  border-radius: 12px;
+  padding: 18px;
+  background: linear-gradient(160deg, #fcfdff, #f9fbfe);
+}
+
+.agent-config__pane-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+
+  &::before {
+    content: "";
+    width: 3px;
+    height: 12px;
+    border-radius: 2px;
+    background: var(--accent-gradient, linear-gradient(180deg, #3b82f6, #06b6d4));
+  }
+}
+
+.agent-config__toolbar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.agent-config__table-wrap {
+  max-height: 38vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  &--tall {
+    max-height: 45vh;
+  }
 }
 
 .expand-table ::v-deep .el-table__expanded-cell {
   padding: 0px;
 }
 
-.one-bgdiv {
-  width: 100%;
-  text-align: left;
-  padding: 0px 30px 10px 30px;
+.agent-config__knowledge {
+  max-height: 42vh;
+  overflow-y: auto;
+  padding: 2px 4px;
 }
 
-.horizontal-line {
-  border-top: 1px solid #ccc; 
-  margin: 10px 0; 
+.agent-config__knowledge-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
-
-.tableBoxDiv ::v-deep .el-table td {
-  padding: 0 0;
-}
-.tableBoxDiv ::v-deep .el-table .cell {
-  line-height: 36px;
-  padding: 0 10px;
-}
-
-.tableBoxDiv ::v-deep .el-table__fixed td {
-  padding: 0 0;
-}
-.tableBoxDiv ::v-deep .el-table__fixed .cell {
-  line-height: 36px;
+.agent-config__knowledge-no {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent-gradient, linear-gradient(135deg, #3b82f6, #06b6d4));
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
 }
 
-.tableBoxDiv ::v-deep .el-table td.el-table__cell div {
-  align-content: center;
+.agent-config__footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 0 4px;
+  margin-top: 6px;
+  border-top: 1px solid var(--border-color, #e5eaf1);
 }
-
-.tableBoxDiv ::v-deep .el-table thead th {
-  padding: 0 0;
-  height: 36px;
-}
-
-.tableBoxDiv ::v-deep .el-table thead .cell {
-  line-height: 36px;
-  padding: 0 10px;
-
-  align-content: center;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-}
-
-.tableBoxDiv ::v-deep .el-table td.el-table__cell div {
-  align-content: center;
-}
-
-.tableBoxDiv ::v-deep .el-table--border,
-.el-table--group {
-  border: none;
-}
-
-.tableBoxDiv ::v-deep .el-table--border::after,
-.el-table--group::after,
-.el-table::before {
-  background-color: #ffffff;
-}
-
-.tableBoxDiv ::v-deep .el-table__header {
-  border-left: 1px solid #ebeef5;
-}
-
-.tableBoxDiv ::v-deep .el-table__body {
-  border-left: 1px solid #ebeef5;
-}
-
-.tableBoxDiv ::v-deep .el-table__body,
-.el-table__footer {
-  border-bottom: 1px solid #ebeef5;
-}
-
-.tableBoxDiv ::v-deep .el-table--border::after,
-.el-table--group::after {
-  width: 0px;
-}*/
 </style>

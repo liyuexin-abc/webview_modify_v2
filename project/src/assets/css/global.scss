@@ -1,5 +1,12 @@
 @use "@/styles/layout.scss" as *;
 
+/* =========================================================
+   全局业务样式（token 化重写）
+   - 保留全部旧类名（allbg/tablebg/searchBox/one-bgdiv/normal-table 等）
+     作为兼容层，但视觉全部对齐 ease-ui 设计语言
+   - 颜色/圆角/阴影统一来自 design-tokens.scss 的 CSS 变量
+   ========================================================= */
+
 .app-layout {
   --sidebar-width: #{$layout-sidebar-width};
   height: 100%;
@@ -19,7 +26,7 @@
     flex-shrink: 0;
     height: $layout-header-height !important;
     padding: 0;
-    border-bottom: 1px solid $layout-border-color;
+    border-bottom: 1px solid var(--border-light, #e5eaf1);
     background: #fff;
   }
 
@@ -33,7 +40,7 @@
     width: auto !important;
     flex-shrink: 0;
     overflow: hidden;
-    border-right: 1px solid $layout-border-color;
+    border-right: 1px solid var(--border-light, #e5eaf1);
     background: #fff;
   }
 
@@ -45,12 +52,12 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background: $layout-bg-page;
+    background: var(--bg-page, #f4f6fb);
   }
 
   .app-layout__tabs-spacer {
     flex-shrink: 0;
-    height: 5px;
+    height: 6px;
   }
 
   .app-layout__tabs {
@@ -61,31 +68,55 @@
     flex-direction: column;
     overflow: hidden;
 
-     .el-tabs__header {
+    .el-tabs__header {
       margin: 0;
       flex-shrink: 0;
     }
 
-     .el-tabs--card>.el-tabs__header {
-      border-bottom: 0 solid #e4e7ed;
+    /* 页签工作区：ease-ui 风格胶囊页签 */
+    .el-tabs--card > .el-tabs__header {
+      border-bottom: 0;
+      padding: 0 10px;
     }
 
-     .el-tabs--card>.el-tabs__header .el-tabs__nav {
-      border: 0 solid #e4e7ed;
+    .el-tabs--card > .el-tabs__header .el-tabs__nav {
+      border: none;
     }
 
-     .el-tabs--card>.el-tabs__header .el-tabs__item {
-      background: #f2f3f7;
-      border-radius: 2px;
-      border-color: white;
-      border-right-width: 5px;
-      border-right-style: solid;
-      border-left-width: 5px;
-      border-left-style: solid;
-    }
+    .el-tabs--card > .el-tabs__header .el-tabs__item {
+      height: 32px;
+      line-height: 32px;
+      margin-right: 8px;
+      padding: 0 16px;
+      font-size: 13px;
+      color: var(--text-secondary, #64748b);
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid transparent;
+      border-radius: var(--radius-md, 8px);
+      transition: all var(--tr-fast, 0.15s);
 
-    .el-tabs__item {
-      background: #fff;
+      &:hover {
+        color: var(--brand, #2b5cff);
+        background: #fff;
+      }
+
+      &.is-active {
+        color: var(--brand, #2b5cff);
+        font-weight: 600;
+        background: #fff;
+        border-color: rgba(43, 92, 255, 0.28);
+        box-shadow: 0 2px 8px rgba(43, 92, 255, 0.10);
+      }
+
+      .el-icon-close {
+        border-radius: 50%;
+        transition: all var(--tr-fast, 0.15s);
+
+        &:hover {
+          background: var(--brand, #2b5cff);
+          color: #fff;
+        }
+      }
     }
 
     .el-tabs__content {
@@ -109,7 +140,7 @@
       overflow: hidden;
     }
 
-     .el-tab-pane.app-layout__tab-pane--active {
+    .el-tab-pane.app-layout__tab-pane--active {
       position: relative;
       visibility: visible;
       pointer-events: auto;
@@ -118,6 +149,8 @@
   }
 }
 
+/* ---------- 页面容器 ---------- */
+
 .my-custom-style .allbg {
   width: 100%;
   height: 100%;
@@ -125,118 +158,121 @@
   min-width: 0;
   overflow: auto;
   align-items: flex-start;
-  background-color: #f2f3f7;
+  background-color: var(--bg-page, #f4f6fb);
 }
 
+/* 内容白卡：ease-ui 白色圆角卡片 */
 .my-custom-style .tablebg {
   min-height: auto;
-  width: calc(100% - 40px);
-  margin: 20px;
-  background-color: white;
+  width: calc(100% - 32px);
+  margin: 16px;
+  background-color: #fff;
+  border: 1px solid var(--border-light, #e5eaf1);
+  border-radius: var(--radius-lg, 12px);
+  box-shadow: var(--shadow-card, 0 1px 3px rgba(30, 41, 59, 0.04));
+  overflow: hidden;
 }
 
 .my-custom-style .searchBox {
   display: flex;
   flex-direction: row;
-  padding: 20px 20px 5px 20px;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 16px 8px 16px;
 }
+
+/* ---------- 表单栅格（兼容层，逐步转 el-form） ---------- */
 
 .my-custom-style .four-bgdiv {
   width: 25%;
   text-align: left;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .my-custom-style .two-front-bgdiv {
   width: 50%;
   text-align: left;
-  padding: 0px 10px 5px 30px;
-  font-size: 14px;
+  padding: 0px 10px 8px 24px;
+  font-size: 13px;
 }
 
 .my-custom-style .two-back-bgdiv {
   width: 50%;
   text-align: left;
-  padding: 0px 30px 5px 10px;
-  font-size: 14px;
+  padding: 0px 24px 8px 10px;
+  font-size: 13px;
 }
 
 .my-custom-style .one-bgdiv {
   width: 100%;
   text-align: left;
-  padding: 0px 30px 5px 30px;
-  font-size: 14px;
+  padding: 0px 24px 8px 24px;
+  font-size: 13px;
 }
 
 .my-custom-style .title16-one-padding-bgdiv {
-  font-weight: bold;
-  font-size: 16px;
-
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-primary, #1e293b);
   width: 100%;
   text-align: left;
-  padding: 0px 30px 5px 30px;
+  padding: 0px 24px 8px 24px;
 }
 
 .my-custom-style .title16-one-bgdiv {
-  font-weight: bold;
-  font-size: 16px;
-
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-primary, #1e293b);
   width: 100%;
   text-align: left;
 }
 
-
 .my-custom-style .horizontal-line {
-  border-top: 1px solid #ccc;
-  /* 1px 厚的横线，颜色为浅灰色 */
-  /*margin: 3px 0;  根据需要调整间距 */
-  margin: 5px 0;
+  border-top: 1px solid var(--border-light, #e5eaf1);
+  margin: 8px 0;
 }
 
+/* 小节标题竖条：品牌渐变 */
 .my-custom-style .vertical-line {
-  width: 5px;
-  /* 竖线的宽度 */
-  height: 15px;
-  /* 竖线的高度 */
-  background-color: #037aff;
-  /* 竖线的颜色 */
+  width: 4px;
+  height: 14px;
+  border-radius: 2px;
+  background: var(--accent-gradient, linear-gradient(135deg, #3b82f6, #06b6d4));
 }
-
 
 .my-custom-style .no-scrollbar {
   scrollbar-width: none;
-  /* Firefox */
   -ms-overflow-style: none;
-  /* Internet Explorer 10+ */
 }
 
 .my-custom-style .no-scrollbar::-webkit-scrollbar {
   overflow: hidden auto;
   display: none;
-  /* Safari 和 Chrome */
 }
 
-
+/* 提示条：浅蓝信息条 */
 .my-custom-style .warntext-bg {
-  background: #e6f1ff;
-  border-radius: 4px 4px 4px 4px;
-  border: 1px solid #80b9ff;
+  background: #eff6ff;
+  border-radius: var(--radius-md, 8px);
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
   align-items: center;
   display: flex;
-  padding: 5px 10px;
-  font-weight: bold;
+  gap: 6px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
 }
 
-
-
+/* ---------- 弹窗 / 抽屉（细节由 element-override 统一控制，这里保留结构兼容） ---------- */
 
 .my-custom-style .el-drawer__header {
   text-align: left;
-  font-weight: bold;
-  font-size: 18px;
-  color: black;
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--text-primary, #1e293b);
   margin-bottom: 0;
-  padding: 10px 20px 0;
+  padding: 14px 20px 12px;
 }
 
 .my-custom-style .el-dialog__body {
@@ -245,74 +281,21 @@
 
 .my-custom-style .el-dialog__header {
   text-align: left;
-  font-weight: bold;
-  color: black;
-  font-size: 18px;
-  padding: 10px 20px 0px 20px;
+  font-weight: 600;
+  color: var(--text-primary, #1e293b);
+  font-size: 16px;
+  padding: 14px 20px 12px 20px;
 }
 
 .my-custom-style .el-dialog {
-  border-radius: 10px;
+  border-radius: var(--radius-lg, 12px);
 }
-
-
-
 
 .my-custom-style .table-container {
   width: 100%;
 }
 
-/*.my-custom-style .expand-table .el-table__expanded-cell {
-  padding: 0px;
-}
-
-.my-custom-style .el-table,
-.my-custom-style .el-table__body-wrapper {
-  font-size: 14px;
-}
-
-.my-custom-style .el-table th {
-  background-color: #f1f1f3;
-  color: #4e5969;
-}
-
-.my-custom-style .el-table__fixed td {
-  padding: 0 0;
-}
-
-.my-custom-style .el-table__fixed .cell {
-  line-height: 36px;
-
-}
-
-.my-custom-style .el-table td {
-  padding: 0 0;
-}
-
-.my-custom-style .el-table .cell {
-  line-height: 36px;
-  padding: 0 10px;
-}
-
-.my-custom-style.el-table td.el-table__cell div {
-  align-content: center;
-}
-
-.my-custom-style .el-table thead th {
-  padding: 0 0;
-  height: 36px;
-}
-
-.my-custom-style .el-table thead .cell {
-  line-height: 36px;
-  padding: 0 10px;
-
-  align-content: center;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-}*/
-
+/* ---------- 控件尺寸（保持 30px 高度兼容业务布局） ---------- */
 
 .my-custom-style .el-select {
   width: 100%;
@@ -324,7 +307,7 @@
   height: 30px;
   line-height: 30px;
   padding: 0 25px 0 10px;
-  border-radius: 7px;
+  border-radius: var(--radius-md, 8px);
 }
 
 .my-custom-style .el-input__suffix {
@@ -338,7 +321,6 @@
   height: 30px;
 }
 
-
 .my-custom-style .el-button {
   line-height: 0 !important;
   height: 30px;
@@ -348,204 +330,262 @@
   line-height: 0 !important;
 }
 
-
-
-
-
-
-.my-custom-style .drag-table .expand-table .el-table__expanded-cell {
-  padding: 0px;
+.my-custom-style .el-button .base-icon {
+  vertical-align: middle;
 }
 
-.my-custom-style .drag-table .el-table,
-.my-custom-style .drag-table .el-table__body-wrapper {
-  font-size: 14px;
+/* =========================================================
+   表格：ease-ui 设计语言
+   th: #f8fafc 底 / #66758a 字 / 600 / 13px
+   td: #66758a 字 / 13px / 12px 14px padding / #e5eaf1 分隔线
+   ========================================================= */
+
+@mixin easeui-table {
+  .el-table,
+  .el-table__body-wrapper {
+    font-size: 13px;
+    color: var(--table-td-color, #66758a);
+  }
+
+  .el-table th {
+    background-color: var(--table-th-bg, #f8fafc) !important;
+    color: var(--table-th-color, #66758a);
+    font-weight: 600;
+  }
+
+  .el-table--border,
+  .el-table--group {
+    border: none;
+  }
+
+  .el-table::before {
+    height: 0px;
+  }
+
+  .el-table__header {
+    border-left: 1px solid var(--border-light, #e5eaf1);
+  }
+
+  .el-table__body {
+    border-left: 1px solid var(--border-light, #e5eaf1);
+  }
+
+  .el-table--border::after,
+  .el-table--group::after {
+    width: 0px;
+  }
+
+  .el-table td {
+    padding: 0 0;
+    border-bottom-color: var(--border-light, #e5eaf1);
+  }
+
+  .el-table__fixed td {
+    padding: 0 0;
+  }
+
+  .el-table td.el-table__cell div {
+    align-content: center;
+  }
+
+  .el-table thead th {
+    padding: 0 0;
+    height: 40px;
+    border-bottom: 1px solid var(--table-th-border, #d7e0ea) !important;
+  }
+
+  .el-table thead .cell {
+    line-height: 40px;
+    padding: 0 14px;
+    align-content: center;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .el-table .cell {
+    line-height: 40px;
+    padding: 0 14px;
+  }
+
+  .el-table__fixed .cell {
+    line-height: 40px;
+  }
+
+  .el-table .el-select {
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+  }
+
+  .el-table__body tr:hover > td.el-table__cell {
+    background-color: var(--table-row-hover, #f4f7ff);
+  }
+
+  .expand-table .el-table__expanded-cell {
+    padding: 0px;
+  }
 }
 
-.my-custom-style .drag-table .el-table th {
-  background-color: #f1f1f3;
-  color: #4e5969;
+.my-custom-style .drag-table {
+  @include easeui-table;
+
+  .el-table .cell,
+  .el-table__fixed .cell {
+    line-height: 40px;
+  }
 }
 
-.my-custom-style .drag-table .el-table--border,
-.el-table--group {
-  border: none;
+.my-custom-style .normal-table {
+  @include easeui-table;
+
+  .el-table .cell {
+    height: 40px;
+  }
+
+  .el-table__fixed .cell {
+    height: 40px;
+  }
 }
 
-.my-custom-style .drag-table .el-table::before {
-  height: 0px;
-}
-
-.my-custom-style .drag-table .el-table__header {
-  border-left: 1px solid #ebeef5;
-}
-
-.my-custom-style .drag-table .el-table__body {
-  border-left: 1px solid #ebeef5;
-}
-
-.my-custom-style .drag-table .el-table--border::after,
-.el-table--group::after {
-  width: 0px;
-}
-
-/* 控制每行文字的行高和垂直居中 */
-.my-custom-style .drag-table .el-table td {
-  padding: 0 0;
-  /* 上下内边距 4px，可自行调整 */
-}
-
-/* 如有固定列，需额外处理 */
-.my-custom-style .drag-table .el-table__fixed td {
-  padding: 0 0;
-}
-
-.my-custom-style .drag-table .el-table td.el-table__cell div {
-  align-content: center;
-}
-
-.my-custom-style .drag-table .el-table thead th {
-  padding: 0 0;
-  height: 36px;
-}
-
-/* 控制表头文字的行高和垂直居中 */
-.my-custom-style .drag-table .el-table thead .cell {
-  line-height: 36px;
-  padding: 0 10px;
-  align-content: center;
-
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-}
-
-.my-custom-style .drag-table .el-table td.el-table__cell div {
-  align-content: center;
-}
-
-
-.my-custom-style .drag-table .el-table .el-select {
-  width: 100%;
-  height: 30px;
-  line-height: 30px;
-}
-
-.my-custom-style .drag-table .el-table .cell {
-  line-height: 36px;
-  padding: 0 10px;
-  /* 左右内边距保留 */
-}
-
-.my-custom-style .drag-table .el-table__fixed .cell {
-  line-height: 36px;
-}
-
-
-
-
-
-.my-custom-style .normal-table .expand-table .el-table__expanded-cell {
-  padding: 0px;
-}
-
-.my-custom-style .normal-table .el-table,
-.my-custom-style .normal-table .el-table__body-wrapper {
-  font-size: 14px;
-}
-
-.my-custom-style .normal-table .el-table th {
-  background-color: #f1f1f3;
-  color: #4e5969;
-}
-
-.my-custom-style .normal-table .el-table--border,
-.el-table--group {
-  border: none;
-}
-
-.my-custom-style .normal-table .el-table::before {
-  height: 0px;
-}
-
-.my-custom-style .normal-table .el-table__header {
-  border-left: 1px solid #ebeef5;
-
-}
-
-.my-custom-style .normal-table .el-table__body {
-  border-left: 1px solid #ebeef5;
-}
-
-.my-custom-style .normal-table .el-table--border::after,
-.el-table--group::after {
-  width: 0px;
-}
-
-/* 控制每行文字的行高和垂直居中 */
-.my-custom-style .normal-table .el-table td {
-  padding: 0 0;
-  /* 上下内边距 4px，可自行调整 */
-}
-
-/* 如有固定列，需额外处理 */
-.my-custom-style .normal-table .el-table__fixed td {
-  padding: 0 0;
-}
-
-.my-custom-style .normal-table .el-table td.el-table__cell div {
-  align-content: center;
-}
-
-.my-custom-style .normal-table .el-table thead th {
-  padding: 0 0;
-  height: 36px;
-}
-
-/* 控制表头文字的行高和垂直居中 */
-.my-custom-style .normal-table .el-table thead .cell {
-  line-height: 36px;
-  padding: 0 10px;
-  align-content: center;
-
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-}
-
-.my-custom-style .normal-table .el-table td.el-table__cell div {
-  align-content: center;
-}
-
-
-
-.my-custom-style .normal-table .el-table::before {
-  height: 0px;
-}
-
-.my-custom-style .normal-table .el-table .cell {
-  line-height: 36px;
-  padding: 0 10px;
-  /* 左右内边距保留 */
-  height: 36px;
-}
-
-.my-custom-style .normal-table .el-table__fixed .cell {
-  line-height: 36px;
-  height: 36px;
-
-}
-
-
-
+/* ---------- 其他 ---------- */
 
 .my-custom-style .my-red-input .el-input__inner {
-  color: red !important; /* 加 !important 防止被覆盖 */
-  border-color: red;
+  color: var(--danger, #ef4444) !important;
+  border-color: var(--danger, #ef4444);
 }
 
-
 .my-custom-style .custom-confirm .el-message-box__title {
-  font-weight: bold; /* 调整为所需的字体粗细 */
-  /* 其他样式可以根据需要添加 */
+  font-weight: 600;
+}
+
+/* ---------- 表格操作列图标按钮(BaseIcon) ---------- */
+.my-custom-style .op-icon-btn {
+  padding: 6px !important;
+  border-radius: 6px;
+  color: var(--brand, #2b5cff);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.my-custom-style .op-icon-btn:hover {
+  background: rgba(43, 92, 255, 0.08);
+}
+.my-custom-style .op-icon-btn.is-danger {
+  color: var(--danger, #ef4444);
+}
+.my-custom-style .op-icon-btn.is-danger:hover {
+  background: rgba(239, 68, 68, 0.08);
+}
+
+/* =========================================================
+   按钮质感升级：渐变底色 + 悬停弹起动画（全站生效）
+   ========================================================= */
+.el-button {
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease,
+    color 0.18s ease, filter 0.18s ease;
+}
+
+.el-button--primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #2b5cff 55%, #4f46e5 100%);
+  background-size: 160% 160%;
+  background-position: 0% 50%;
+  border: none;
+  box-shadow: 0 2px 8px rgba(43, 92, 255, 0.28);
+}
+
+.el-button--primary:hover,
+.el-button--primary:focus {
+  background: linear-gradient(135deg, #4f8dfa 0%, #3b6cff 55%, #6156ee 100%);
+  background-position: 100% 50%;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(43, 92, 255, 0.38);
+  border: none;
+  color: #fff;
+}
+
+.el-button--primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(43, 92, 255, 0.3);
+}
+
+.el-button--primary.is-disabled,
+.el-button--primary.is-disabled:hover {
+  background: linear-gradient(135deg, #a5c0fb, #98a8f5);
+  transform: none;
+  box-shadow: none;
+}
+
+.el-button--danger {
+  background: linear-gradient(135deg, #f87171, #ef4444 60%, #e11d48);
+  border: none;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
+}
+.el-button--danger:hover,
+.el-button--danger:focus {
+  background: linear-gradient(135deg, #fb8585, #f25555 60%, #eb3560);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35);
+  border: none;
+}
+
+.el-button--success {
+  background: linear-gradient(135deg, #34d399, #10b981 60%, #059669);
+  border: none;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+}
+.el-button--success:hover,
+.el-button--success:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+  border: none;
+}
+
+/* 默认(白底)按钮: 悬停浮起 + 品牌描边 */
+.el-button--default:hover,
+.el-button--default:focus {
+  transform: translateY(-1px);
+  border-color: rgba(43, 92, 255, 0.45);
+  color: var(--brand, #2b5cff);
+  background: linear-gradient(135deg, #f5f8ff, #f0f7ff);
+  box-shadow: 0 4px 10px rgba(43, 92, 255, 0.12);
+}
+.el-button--default:active {
+  transform: translateY(0);
+}
+
+/* text 按钮不参与浮起(表格操作列内) */
+.el-button--text:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* 弹窗表单呼吸感: label 与控件间距、表单项间距统一放宽 */
+.my-custom-style .el-form--label-top .el-form-item__label {
+  padding-bottom: 6px;
+  line-height: 20px;
+}
+.my-custom-style .el-dialog .el-form-item {
+  margin-bottom: 20px;
+}
+
+/* ---------- 输入控件质感: 悬停/聚焦渐进反馈 ---------- */
+.my-custom-style .el-input__inner,
+.my-custom-style .el-textarea__inner {
+  background: #fbfcfe;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+.my-custom-style .el-input__inner:hover,
+.my-custom-style .el-textarea__inner:hover {
+  border-color: rgba(43, 92, 255, 0.35);
+  background: #fff;
+}
+.my-custom-style .el-input__inner:focus,
+.my-custom-style .el-textarea__inner:focus {
+  border-color: var(--brand, #2b5cff);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(43, 92, 255, 0.08);
+}
+.my-custom-style .el-textarea__inner {
+  border-radius: var(--radius-md, 8px);
 }

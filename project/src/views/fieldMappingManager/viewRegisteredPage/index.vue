@@ -1,21 +1,16 @@
 <template>
-  <div>
-    <div class="horizontal-line"></div>
-
+  <div class="view-reg">
     <div
-      style="max-height: 70vh; overflow-y: auto; overflow-x: hidden"
+      style="max-height: 72vh; overflow-y: auto; overflow-x: hidden; padding: 4px 28px 0"
       class="no-scrollbar"
     >
-      <div style="display: flex">
-        <div class="one-bgdiv">数据源<span style="color: red">*</span></div>
-      </div>
-
-      <div style="display: flex">
-        <div class="one-bgdiv">
+      <el-form label-position="top" size="small" class="view-reg__form">
+        <el-form-item required>
+          <template slot="label">数据源</template>
           <el-select
             placeholder="请选择数据源"
             v-model="viewData.sourceId"
-            style="width: 70%"
+            style="width: 100%; max-width: 480px"
           >
             <el-option
               v-for="item in dataSourceList"
@@ -25,145 +20,132 @@
             >
             </el-option>
           </el-select>
-        </div>
-      </div>
+        </el-form-item>
 
-      <div style="display: flex">
-        <div class="two-front-bgdiv" style="display: flex">
-          <div>视图英文名<span style="color: red">*</span></div>
-          <div style="color:silver;">（固定 view_ 前缀）</div>
-        </div>
-
-        <div class="two-back-bgdiv">
-          视图中文名<span style="color: red">*</span>
-        </div>
-      </div>
-
-      <div style="display: flex">
-        <div class="two-front-bgdiv">
-          <el-input
-            v-model="viewData.viewEnName"
-            placeholder="view_"
-          ></el-input>
-        </div>
-
-        <div class="two-back-bgdiv">
-          <el-input
-            v-model="viewData.viewCnName"
-            placeholder="如:患者汇总视图"
-          ></el-input>
-        </div>
-      </div>
-
-      <div style="display: flex">
-        <div class="one-bgdiv">视图SQL<span style="color: red">*</span></div>
-      </div>
-
-      <div style="display: flex">
-        <div class="one-bgdiv">
-          <el-input
-            v-model="viewData.sql"
-            :autosize="{ minRows: 3, maxRows: 20 }"
-            type="textarea"
-            resize="none"
-            placeholder="SELECT ... FROM ... JOIN ... WHERE ..."
-          ></el-input>
-        </div>
-      </div>
-
-      <div style="display: flex">
-        <div class="one-bgdiv">
-          <div style="display: flex; align-items: center">
-            <el-button type="primary" @click="sureParseTableSql"
-              >执行并解析</el-button
-            >
-
-            <div style="margin-left: 20px; color: green">{{ parseText }}</div>
-          </div>
-        </div>
-      </div>
-
-      <div style="display: flex" v-if="parseData.length > 0">
-        <div class="title16-one-padding-bgdiv">
-          解析字段列表
-
-          <div class="horizontal-line"></div>
-        </div>
-      </div>
-
-      <div style="display: flex" v-if="parseData.length > 0">
-        <div class="one-bgdiv">
-          <div class="drag-table">
-            <el-table
-              empty-text='请先编写SQL并点击"执行并解析"'
-              :data="parseData"
-              border
-              v-loading="loading"
-              element-loading-text="加载中..."
-              element-loading-background="rgb(248 248 248 / 50%)"
-              @header-dragend="onDragEnd"
-              ref="tableRef"
-            >
-              <el-table-column
-                label="字段名"
-                prop="fieldKey"
-                width="auto"
-                min-width="40%"
-                resizable
-                sortable
-                show-overflow-tooltip
-                :render-header="renderHeader"
+        <el-row :gutter="16">
+          <el-col :span="12">
+            <el-form-item required>
+              <template slot="label"
+                >视图英文名
+                <span class="view-reg__hint">(固定 view_ 前缀)</span></template
               >
-                <template slot-scope="scope">
-                  <div style="display: flex; gap: 5px">
-                    <div
-                      v-if="
-                        scope.row.compareStatus == compareStatusEnum['0'].value
-                      "
-                      style="
-                        text-align: center;
-                        background-color: #c8eac8;
-                        width: 35px;
-                        padding: 0 2px 0 2px;
-                        color: rgb(0 124 0);
-                      "
-                    >
-                      {{ compareStatusEnum["0"].name }}
-                    </div>
+              <el-input
+                v-model="viewData.viewEnName"
+                placeholder="view_"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="视图中文名" required>
+              <el-input
+                v-model="viewData.viewCnName"
+                placeholder="如:患者汇总视图"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
-                    <div
-                      v-if="
-                        scope.row.compareStatus == compareStatusEnum['1'].value
-                      "
-                      style="
-                        text-align: center;
-                        background-color: rgb(190 203 240);
-                        width: 35px;
-                        padding: 0 2px 0 2px;
-                        color: rgb(52 98 228);
-                      "
-                    >
-                      {{ compareStatusEnum["1"].name }}
-                    </div>
+        <el-form-item label="视图SQL" required>
+          <sql-editor
+            v-model="viewData.sql"
+            title="视图 SQL"
+            :rows="8"
+          />
+          <div class="view-reg__sql-actions">
+            <el-button type="primary" size="small" @click="sureParseTableSql"
+              ><base-icon name="play" :size="13" />&nbsp;执行并解析</el-button
+            >
+            <span class="view-reg__parse-text">{{ parseText }}</span>
+          </div>
+        </el-form-item>
+      </el-form>
 
-                    <div
-                      v-if="
-                        scope.row.compareStatus == compareStatusEnum['2'].value
-                      "
-                      style="
-                        text-align: center;
-                        background-color: rgb(254 178 178);
-                        width: 35px;
-                        padding: 0 2px 0 2px;
-                        color: rgb(255 8 8);
-                      "
-                    >
-                      {{ compareStatusEnum["2"].name }}
-                    </div>
+      <template v-if="parseData.length > 0">
+        <div class="view-reg__section-title">解析字段列表</div>
 
-                    <div>{{ scope.row.fieldKey }}</div>
-                  </div>
-                </template>
+        <div class="drag-table">
+          <el-table
+            empty-text='请先编写SQL并点击"执行并解析"'
+            :data="parseData"
+            border
+            v-loading="loading"
+            element-loading-text="加载中..."
+            element-loading-background="rgb(248 248 248 / 50%)"
+            @header-dragend="onDragEnd"
+            ref="tableRef"
+          >
+            <el-table-column
+              label="字段名"
+              prop="fieldKey"
+              width="auto"
+              min-width="40%"
+              resizable
+              sortable
+              show-overflow-tooltip
+              :render-header="renderHeader"
+            >
+              <template slot-scope="scope">
+                <div style="display: flex; align-items: center; gap: 6px">
+                  <span
+                    v-if="scope.row.compareStatus == compareStatusEnum['0'].value"
+                    class="view-reg__tag view-reg__tag--keep"
+                    >{{ compareStatusEnum["0"].name }}</span
+                  >
+                  <span
+                    v-if="scope.row.compareStatus == compareStatusEnum['1'].value"
+                    class="view-reg__tag view-reg__tag--new"
+                    >{{ compareStatusEnum["1"].name }}</span
+                  >
+                  <span
+                    v-if="scope.row.compareStatus == compareStatusEnum['2'].value"
+                    class="view-reg__tag view-reg__tag--drop"
+                    >{{ compareStatusEnum["2"].name }}</span
+                  >
+                  <span>{{ scope.row.fieldKey }}</span>
+                </div>
+              </template>
+            </el-table-column>
+
+            <el-table-column
+              label="字段类型"
+              prop="fieldType"
+              width="auto"
+              min-width="20%"
+              resizable
+              sortable
+              show-overflow-tooltip
+              :render-header="renderHeader"
+            />
+            <el-table-column
+              label="字段中文名"
+              prop="fieldName"
+              width="auto"
+              min-width="40%"
+              sortable
+              resizable
+              :render-header="renderHeader"
+            >
+              <template slot-scope="scope">
+                <el-input
+                  v-model="scope.row.fieldName"
+                  :disabled="
+                    scope.row.compareStatus == compareStatusEnum['2'].value
+                  "
+                />
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </template>
+    </div>
+    <div class="horizontal-line" style="margin-top: 12px"></div>
+
+    <div class="view-reg__footer">
+      <el-button @click="close">取消</el-button>
+      <el-button type="primary" @click="sureView">保存并注册</el-button>
+    </div>
+  </div>
+</template>
               </el-table-column>
 
               <el-table-column
@@ -219,12 +201,13 @@ import {
   getViewDetalAPI,
   compareStatusEnum,
 } from "@/api/fieldMappingManager/fieldMappingAPI.js";
+import SqlEditor from "@/components/SqlEditor";
 
 export default {
   name: "viewRegisteredPage",
   //props: ["viewRegisteredItem"],
   props: ["viewID"],
-  components: {},
+  components: { SqlEditor },
   data() {
     return {
       compareStatusEnum,
@@ -540,6 +523,84 @@ export default {
 </script>
 
 
- <style scoped lang="scss">
+<style scoped lang="scss">
+.view-reg__form {
+  ::v-deep .el-form-item__label {
+    padding-bottom: 6px;
+    font-weight: 600;
+    color: #334155;
+  }
+  ::v-deep .el-form-item {
+    margin-bottom: 22px;
+  }
+}
 
+.view-reg__hint {
+  font-weight: 400;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.view-reg__sql-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.view-reg__parse-text {
+  font-size: 12.5px;
+  color: #16a34a;
+}
+
+.view-reg__section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+
+  &::before {
+    content: "";
+    width: 4px;
+    height: 14px;
+    border-radius: 2px;
+    background: var(--accent-gradient, linear-gradient(180deg, #3b82f6, #06b6d4));
+  }
+}
+
+.view-reg__tag {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  flex-shrink: 0;
+
+  &--keep {
+    background: #dcfce7;
+    color: #15803d;
+  }
+  &--new {
+    background: #dbeafe;
+    color: #2563eb;
+  }
+  &--drop {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+}
+
+.view-reg__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 28px 18px;
+  border-top: 1px solid var(--border-color, #e5eaf1);
+  margin-top: 8px;
+}
 </style>
